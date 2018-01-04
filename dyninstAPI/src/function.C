@@ -694,7 +694,12 @@ Symbol *func_instance::getRelocSymbol() {
    return referring;
 }
 
+Address func_instance::GetRelocatedAddress() {
+  return _relocatedAddress;
+}
+
 void func_instance::createWrapperSymbol(Address entry, std::string name) {
+   _relocatedAddress = entry;
    if (wrapperSym_) {
       // Just update the address
       wrapperSym_->setOffset(entry);

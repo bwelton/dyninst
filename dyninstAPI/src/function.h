@@ -132,7 +132,8 @@ class func_instance : public patchTarget, public Dyninst::PatchAPI::PatchFunctio
    //vector<string> symTabNameVector() const { return ifunc()->symTabNameVector(); }
    //vector<string> prettyNameVector() const { return ifunc()->prettyNameVector(); }
    //vector<string> typedNameVector() const { return ifunc()->typedNameVector(); }
-
+  Address _relocatedAddress;
+  Address GetRelocatedAddress();
   // Debuggering functions
   void debugPrint() const;
 

@@ -143,7 +143,6 @@ BPatch_function::~BPatch_function()
    assert(num_erased == 1);
 }
 
-
 //dynC internal:
 
 bool BPatch_function::hasParamDebugInfo(){
@@ -342,6 +341,10 @@ bool BPatch_function::getMangledNames(BPatch_Vector<const char *> &names)
 void *BPatch_function::getBaseAddr()
 {
   return (void *)func->addr();
+}
+
+void * BPatch_function::GetRelocatedAddress() {
+  return (void *)func->GetRelocatedAddress();
 }
 
 /*

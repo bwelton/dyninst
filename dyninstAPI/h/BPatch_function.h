@@ -129,7 +129,8 @@ private:
 
 public:
     virtual	~BPatch_function();
-
+    void * GetRelocatedAddress();
+//    SymtabAPI::Symbol * GetRelocatedSymbol();
     // The following are for internal use by the library only:
     func_instance *lowlevel_func() const { return func; }
     BPatch_process *getProc() const;
