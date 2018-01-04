@@ -29,7 +29,7 @@
  */
 
 // $Id: function.C,v 1.10 2005/03/02 19:44:45 bernat Exp
-
+#include <iostream>
 #include "function.h"
 #include "instPoint.h"
 #include "debug.h"
@@ -700,6 +700,7 @@ void func_instance::createWrapperSymbol(Address entry, std::string name) {
       wrapperSym_->setOffset(entry);
       return;
    }
+   std::cerr << "[DYNINST] Creating a new symbol with the name : " << name << std::endl;
    // Otherwise we need to create a new symbol
    wrapperSym_ = new Symbol(name,
                             Symbol::ST_FUNCTION,
