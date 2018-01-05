@@ -715,11 +715,12 @@ void func_instance::createWrapperSymbol(Address entry, std::string name) {
    _relocatedAddress = entry;
 
    if (wrapperSym_) {
+      std::cerr << "[DYNINST] Modifying wrapper symbol : " << wrapperSym_->getPrettyName() << std::endl;
       // Just update the address
       wrapperSym_->setOffset(entry);
       return;
    }
-   //std::cerr << "[DYNINST] Creating a new symbol with the name : " << name << std::endl;
+   std::cerr << "[DYNINST] Creating a new symbol with the name : " << name << std::endl;
    // Otherwise we need to create a new symbol
    wrapperSym_ = new Symbol(name,
                             Symbol::ST_FUNCTION,
