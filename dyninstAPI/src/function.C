@@ -700,18 +700,26 @@ Address func_instance::GetRelocatedAddress() {
   return _relocatedAddress;
 }
 
+
+
 void func_instance::setModuleForWrapping(void * module) {
   _my_module = module;
 }
 
+void func_instance::SetWrapperSym(Dyninst::SymtabAPI::Symbol * s) {
+  wrapperSym_ = s;
+}
+
+
 void func_instance::createWrapperSymbol(Address entry, std::string name) {
    _relocatedAddress = entry;
+
    if (wrapperSym_) {
       // Just update the address
       wrapperSym_->setOffset(entry);
       return;
    }
-   std::cerr << "[DYNINST] Creating a new symbol with the name : " << name << std::endl;
+   //std::cerr << "[DYNINST] Creating a new symbol with the name : " << name << std::endl;
    // Otherwise we need to create a new symbol
    wrapperSym_ = new Symbol(name,
                             Symbol::ST_FUNCTION,

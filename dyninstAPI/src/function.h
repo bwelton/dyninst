@@ -136,6 +136,7 @@ class func_instance : public patchTarget, public Dyninst::PatchAPI::PatchFunctio
   void * _my_module;
   void setModuleForWrapping(void * module);
   Address GetRelocatedAddress();
+  void SetWrapperSym(Dyninst::SymtabAPI::Symbol * s);
   // Debuggering functions
   void debugPrint() const;
 
