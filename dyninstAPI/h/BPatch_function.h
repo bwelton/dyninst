@@ -129,6 +129,7 @@ private:
 
 public:
     virtual	~BPatch_function();
+    void SetRelocationModule();
     void * GetRelocatedAddress();
 //    SymtabAPI::Symbol * GetRelocatedSymbol();
     // The following are for internal use by the library only:

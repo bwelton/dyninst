@@ -343,6 +343,10 @@ void *BPatch_function::getBaseAddr()
   return (void *)func->addr();
 }
 
+void BPatch_function::SetRelocationModule() {
+  func->setModuleForWrapping((void *)Dyninst::SymtabAPI::convert(getModule()));
+}
+
 void * BPatch_function::GetRelocatedAddress() {
   return (void *)func->GetRelocatedAddress();
 }

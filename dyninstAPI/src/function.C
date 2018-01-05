@@ -70,6 +70,7 @@ func_instance::func_instance(parse_func *f,
 #endif
    , wrapperSym_(NULL)
 {
+  _my_module = NULL;
   assert(f);
 #if defined(ROUGH_MEMORY_PROFILE)
   func_instance_count++;
@@ -119,6 +120,7 @@ func_instance::func_instance(const func_instance *parFunc,
 #endif
    , wrapperSym_(NULL)
 {
+  _my_module = NULL;
    assert(ifunc());
    // According to contract /w/ the mapped_object
    // all blocks have already been constructed.
@@ -698,6 +700,10 @@ Address func_instance::GetRelocatedAddress() {
   return _relocatedAddress;
 }
 
+void func_instance::setModuleForWrapping(void * module) {
+  _my_module = module;
+}
+
 void func_instance::createWrapperSymbol(Address entry, std::string name) {
    _relocatedAddress = entry;
    if (wrapperSym_) {
@@ -712,7 +718,7 @@ void func_instance::createWrapperSymbol(Address entry, std::string name) {
                             Symbol::SL_GLOBAL,
                             Symbol::SV_DEFAULT,
                             entry,
-                            NULL, // This is module - I probably want this?
+                            (SymtabAPI::Module *)_my_module, // This is module - I probably want this?
                             NULL, // Region - again, find it?
                             0, // size - zero okay?
                             false, // Definitely not dynamic ("Static binaries don't have dynamic symbols - Dan")

@@ -133,6 +133,8 @@ class func_instance : public patchTarget, public Dyninst::PatchAPI::PatchFunctio
    //vector<string> prettyNameVector() const { return ifunc()->prettyNameVector(); }
    //vector<string> typedNameVector() const { return ifunc()->typedNameVector(); }
   Address _relocatedAddress;
+  void * _my_module;
+  void setModuleForWrapping(void * module);
   Address GetRelocatedAddress();
   // Debuggering functions
   void debugPrint() const;
