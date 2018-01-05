@@ -506,7 +506,7 @@ bool BPatch_addressSpace::wrapFunction(BPatch_function *original,
    if (original->lowlevel_func() == wrapper->lowlevel_func()) {
       return true;
    }
-
+   original->lowlevel_func()->SetWrapperSym(clone);
    if (!original->lowlevel_func()->proc()->wrapFunction(original->lowlevel_func(), 
                                                       wrapper->lowlevel_func(),
                                                       clone))
