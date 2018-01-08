@@ -33,6 +33,7 @@
 #include <string>
 #include <cctype>
 #include <algorithm>
+#include <iostream>
 
 #include "dyninstAPI/src/mapped_object.h"
 #include "dyninstAPI/src/mapped_module.h"
@@ -2117,10 +2118,13 @@ void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
    vector<SymtabAPI::relocationEntry> fbt;
    bool ok = parse_img()->getObject()->getFuncBindingTable(fbt);
    if(!ok) return;
+   std::cerr << "[DYNINST-MappedObject] Found FBT" << std::cerr;
    
    
    for (unsigned i = 0; i < fbt.size(); ++i) {
+      std::cerr << "Name: " << fbt[i].name() << " Looking for: " << sym->getMangledName() << std::endl;
       if (fbt[i].name() == sym->getMangledName()) {
+        std::cerr << "Found fbt and name, binding plt entry" << std::endl;
          proc()->bindPLTEntry(fbt[i], codeBase(), orig, newAddr);
       }
    }
