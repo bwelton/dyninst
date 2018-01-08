@@ -2122,7 +2122,7 @@ void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
    
    
    for (unsigned i = 0; i < fbt.size(); ++i) {
-      fprintf(stderr "%s %s %s %s\n", "Name: ", fbt[i].name().c_str()," Looking for: ",sym->getMangledName().c_str());
+      fprintf(stderr, "%s %s %s %s\n", "Name: ", fbt[i].name().c_str()," Looking for: ",sym->getMangledName().c_str());
       if (fbt[i].name() == sym->getMangledName()) {
         fprintf(stderr,"Found fbt and name, binding plt entry\n");
          proc()->bindPLTEntry(fbt[i], codeBase(), orig, newAddr);
