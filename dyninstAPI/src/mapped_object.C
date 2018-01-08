@@ -2118,13 +2118,13 @@ void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
    vector<SymtabAPI::relocationEntry> fbt;
    bool ok = parse_img()->getObject()->getFuncBindingTable(fbt);
    if(!ok) return;
-   std::cerr << "[DYNINST-MappedObject] Found FBT" << std::cerr;
+   fprintf(stderr,"[DYNINST-MappedObject] Found FBT\n");
    
    
    for (unsigned i = 0; i < fbt.size(); ++i) {
-      std::cerr << "Name: " << fbt[i].name() << " Looking for: " << sym->getMangledName() << std::endl;
+      fprintf(stderr "%s %s %s %s\n", "Name: ", fbt[i].name()," Looking for: ",sym->getMangledName());
       if (fbt[i].name() == sym->getMangledName()) {
-        std::cerr << "Found fbt and name, binding plt entry" << std::endl;
+        fprintf(stderr,"Found fbt and name, binding plt entry\n");
          proc()->bindPLTEntry(fbt[i], codeBase(), orig, newAddr);
       }
    }
