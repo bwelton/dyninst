@@ -67,7 +67,6 @@ class SYMTAB_EXPORT Variable : public Aggregate, public Serializable, public Ann
    void setType(Type *type);
    Type *getType();
 
-   std::string getName();
    Serializable *serialize_impl(SerializerBase *sb, 
 		   const char *tag = "Variable") THROW_SPEC (SerializerError);
    bool operator==(const Variable &v);
