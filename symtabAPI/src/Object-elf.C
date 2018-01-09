@@ -5104,7 +5104,7 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
             {
                 relocationEntry newrel(0, relOff, addend, name, sym, relType, regType);
                 region->addRelocationEntry(newrel);
-                if (sym)
+                if (sym){
                     if (sym->getPrettyName().find("ORIGINAL_cuInit") != std::string::npos) {
                         fprintf(stderr, "%s\n", "[Object-elf] cuInit Information: ");
                         if (sym->getModule() != NULL)
@@ -5113,6 +5113,7 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
                         if (sym->getRegion() != NULL)
                             fprintf(stderr, "[Object-elf] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
                     }
+                }
 
                 // relocations are also stored with their targets
                 // Need to find target region
