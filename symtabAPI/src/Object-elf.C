@@ -69,7 +69,7 @@ using namespace std;
 #include <iomanip>
 
 #include <fstream>
-
+#include <cassert>
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/set.hpp>
 
@@ -987,7 +987,7 @@ void Object::parseDynamic(Elf_X_Shdr *&dyn_scnp, Elf_X_Shdr *&dynsym_scnp,
         }
     }
     if (rel_scnp_index  != -1)
-        get_relocationDyn_entries(rel_scnp_index, dynsym_scnp, dynstr_scnp);
+        assert(true == get_relocationDyn_entries(rel_scnp_index, dynsym_scnp, dynstr_scnp));
 }
 
 /* parse relocations for the sections represented by DT_REL/DT_RELA in
