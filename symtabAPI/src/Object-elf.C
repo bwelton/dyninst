@@ -5095,15 +5095,22 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
                 region = shToReg_it->second;
             }
 
-            if (sym) {
-                fprintf(stderr, "[Object-elf] Found Symbol for relocation entry: %s\n", sym->getPrettyName().c_str());
-            } else {
-                fprintf(stderr, "[Object-elf] MISSING RELOCATION ENTRY\n");
-            }
+            // if (sym) {
+            //     fprintf(stderr, "[Object-elf] Found Symbol for relocation entry: %s\n", sym->getPrettyName().c_str());
+            // } else {
+            //     fprintf(stderr, "[Object-elf] MISSING RELOCATION ENTRY\n");
+            // }
             if(region != NULL)
             {
                 relocationEntry newrel(0, relOff, addend, name, sym, relType, regType);
                 region->addRelocationEntry(newrel);
+                if (sym->getPrettyName().find("ORIGINAL_cuInit") != std::string::npos) {
+                    fprintf(stderr, "%s\n", "[Object-elf] cuInit Information: ");
+                    fprintf(stderr, "[Object-elf] Module Name: %s\n", sym->getModule().c_str());
+                    fprintf(stderr, "[Object-elf] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
+                    fprintf(stderr, "[Object-elf] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
+                }
+
                 // relocations are also stored with their targets
                 // Need to find target region
                 if (sym) {
