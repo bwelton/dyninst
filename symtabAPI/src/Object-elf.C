@@ -4988,13 +4988,17 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
         std::vector<Symbol *>::iterator sym_it;
         for(sym_it = symVec_it->second.begin(); sym_it != symVec_it->second.end(); ++sym_it) {
             // Skip any symbols pointing to the undefined symbol entry
+            fprintf(stderr, "[Object-elf] Processing Symbol - %s\n",(*sym_it)->getPrettyName().c_str());
             if( (*sym_it)->getIndex() == STN_UNDEF ) {
+                fprintf(stderr, "%s\n", "Skipping Symbol - UNDEFINED" );
                 continue;
             }
             if( (*sym_it)->tag() == Symbol::TAG_INTERNAL ) {
+                fprintf(stderr, "%s\n", "Skipping Symbol - Internal" );
                 continue;
             }
             if( (*sym_it)->isDebug() ) {
+                fprintf(stderr, "%s\n", "Skipping Symbol - DEBUG" );
                 continue;
             }
 
