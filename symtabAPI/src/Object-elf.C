@@ -5035,7 +5035,6 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
         Elf_X_Shdr *curSymHdr = allRegionHdrsByShndx[shdr->sh_link()];
 
         // Apparently, relocation entries may not have associated symbols.
-
         for(unsigned j = 0; j < (shdr->sh_size() / shdr->sh_entsize()); ++j) {
             // Relocation entry fields - need to be populated
 
@@ -5097,7 +5096,7 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
             }
 
             if (sym) {
-                fprintf(stderr, "[Object-elf] Found Symbol for relocation entry: %s\n", sym->getName().c_str());
+                fprintf(stderr, "[Object-elf] Found Symbol for relocation entry: %s\n", sym->getPrettyName().c_str());
             } else {
                 fprintf(stderr, "[Object-elf] MISSING RELOCATION ENTRY\n");
             }
