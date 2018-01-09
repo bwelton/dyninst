@@ -5004,8 +5004,10 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
 
             std::pair<dyn_hash_map<int, Symbol *>::iterator, bool> result;
             if( (*sym_it)->isInDynSymtab() ) {
+                fprintf(stderr, "%s\n", "Inserting into Dynsymbyindex");
                 result = dynsymByIndex.insert(std::make_pair((*sym_it)->getIndex(), (*sym_it)));
             }else{
+                fprintf(stderr, "%s\n", "Inserting into symtabByIndex");
                 result = symtabByIndex.insert(std::make_pair((*sym_it)->getIndex(), (*sym_it)));
             }
 
