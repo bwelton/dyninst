@@ -166,6 +166,11 @@ std::ostream &operator<<(std::ostream &os, const Dyninst::SymtabAPI::Variable &v
 	return os;	
 
 }
+
+std::string Variable::getName() {
+	return sym->getPrettyName();
+}
+
 bool Variable::operator==(const Variable &v)
 {
 	if (type_ && !v.type_)
