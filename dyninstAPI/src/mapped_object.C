@@ -2115,17 +2115,17 @@ void mapped_object::setCallee(const block_instance *b, func_instance *f) {
 
 void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, Address newAddr) {
    // Let's play relocation games...
-   fprintf(stderr, "%s %s\n", "Looking in mapped object: ", fullName().c_str());
+   //fprintf(stderr, "%s %s\n", "Looking in mapped object: ", fullName().c_str());
    vector<SymtabAPI::relocationEntry> fbt;
    bool ok = parse_img()->getObject()->getFuncBindingTable(fbt);
    if(!ok) return;
-   fprintf(stderr,"[DYNINST-MappedObject] Found FBT\n");
+   //fprintf(stderr,"[DYNINST-MappedObject] Found FBT\n");
    
    
    for (unsigned i = 0; i < fbt.size(); ++i) {
-      fprintf(stderr, "%s %s\n", "FBT Name: ", fbt[i].name().c_str());
+      //fprintf(stderr, "%s %s\n", "FBT Name: ", fbt[i].name().c_str());
       if (fbt[i].name() == sym->getMangledName()) {
-        fprintf(stderr,"Found fbt and name, binding plt entry\n");
+        //fprintf(stderr,"Found fbt and name, binding plt entry\n");
          proc()->bindPLTEntry(fbt[i], codeBase(), orig, newAddr);
       }
    }
