@@ -5104,12 +5104,15 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
             {
                 relocationEntry newrel(0, relOff, addend, name, sym, relType, regType);
                 region->addRelocationEntry(newrel);
-                if (sym->getPrettyName().find("ORIGINAL_cuInit") != std::string::npos) {
-                    fprintf(stderr, "%s\n", "[Object-elf] cuInit Information: ");
-                    fprintf(stderr, "[Object-elf] Module Addr: %llu\n", sym->getModule()->addr());
-                    fprintf(stderr, "[Object-elf] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
-                    fprintf(stderr, "[Object-elf] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
-                }
+                if (sym)
+                    if (sym->getPrettyName().find("ORIGINAL_cuInit") != std::string::npos) {
+                        fprintf(stderr, "%s\n", "[Object-elf] cuInit Information: ");
+                        if (sym->getModule() != NULL)
+                            fprintf(stderr, "[Object-elf] Module Addr: %llu\n", sym->getModule()->addr());
+                        fprintf(stderr, "[Object-elf] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
+                        if (sym->getRegion() != NULL)
+                            fprintf(stderr, "[Object-elf] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
+                    }
 
                 // relocations are also stored with their targets
                 // Need to find target region
