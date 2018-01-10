@@ -2144,8 +2144,6 @@ void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
         }
       }
    }
-   assert(found == true);
-
 }
 
 string mapped_object::fileName() const { 
