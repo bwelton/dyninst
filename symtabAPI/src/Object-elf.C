@@ -5106,6 +5106,7 @@ bool Object::parse_all_relocations(Elf_X &elf, Elf_X_Shdr *dynsym_scnp,
                 region->addRelocationEntry(newrel);
                 if (sym){
                     if (sym->getPrettyName().find("ORIGINAL_cuInit") != std::string::npos) {
+                        fprintf(stderr, "REGION: %s\n",region->getRegion()->getRegionName().c_str());
                         fprintf(stderr, "%s\n", "[Object-elf] cuInit Information: ");
                         if (sym->getModule() != NULL)
                             fprintf(stderr, "[Object-elf] Module Addr: %llu\n", sym->getModule()->addr());
