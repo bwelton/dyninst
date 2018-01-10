@@ -1565,6 +1565,9 @@ bool Symtab::extractInfo(Object *linkedFile)
 
     vector<relocationEntry >fbt;
     linkedFile->get_func_binding_table(fbt);
+
+    // Insert Function Call to get relocation_table_ from Object-Elf....
+    // 
     for(unsigned i=0; i<fbt.size();i++)
         relocation_table_.push_back(fbt[i]);
     return true;
