@@ -29,7 +29,7 @@
  */
 
 // $Id: mapped_object.C,v 1.39 2008/09/03 06:08:44 jaw Exp $
-
+#include <cassert>
 #include <string>
 #include <cctype>
 #include <algorithm>
@@ -2121,14 +2121,31 @@ void mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
    if(!ok) return;
    //fprintf(stderr,"[DYNINST-MappedObject] Found FBT\n");
    
-   
+  
+   bool found = false;
    for (unsigned i = 0; i < fbt.size(); ++i) {
       //fprintf(stderr, "%s %s\n", "FBT Name: ", fbt[i].name().c_str());
       if (fbt[i].name() == sym->getMangledName()) {
         //fprintf(stderr,"Found fbt and name, binding plt entry\n");
          proc()->bindPLTEntry(fbt[i], codeBase(), orig, newAddr);
+         found = true;
       }
    }
+
+   // If we do not find the symbol in the PLT Table, search all relocations 
+   if (found == false){
+      vector<SymtabAPI::relocationEntry> generalRelocs;
+      ok = parse_img()->getObject()->getAllRelocations(generalRelocs);
+      if (!ok) return;
+      for (auto i : generalRelocs) {
+        if (i.name() == sym->getMangledName()){
+          proc()->bindPLTEntry(i, codeBase(), orig, newAddr);
+          found = true;
+        }
+      }
+   }
+   assert(found == true);
+
 }
 
 string mapped_object::fileName() const { 

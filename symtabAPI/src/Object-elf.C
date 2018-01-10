@@ -3030,6 +3030,11 @@ bool Object::addRelocationEntry(relocationEntry &re)
     return true;
 }
 
+bool Object::getRelocationTable(std::vector<relocationEntry> & reloc) {
+    reloc = relocation_table_;
+    return true;
+}
+
 #ifdef DEBUG
 
 // stream-based debug output

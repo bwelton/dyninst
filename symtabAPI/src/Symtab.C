@@ -1564,13 +1564,19 @@ bool Symtab::extractInfo(Object *linkedFile)
     sort(excpBlocks.begin(), excpBlocks.end(), ExceptionBlockCmp);
 
     vector<relocationEntry >fbt;
-    linkedFile->get_func_binding_table(fbt);
 
-    // Insert Function Call to get relocation_table_ from Object-Elf....
-    // 
+
+    linkedFile->get_func_binding_table(fbt);
+    linkedFile->getRelocationTable(all_relocations_);
+
     for(unsigned i=0; i<fbt.size();i++)
         relocation_table_.push_back(fbt[i]);
     return true;
+}
+
+bool Symtab::getAllRelocations(std::vector<relocationEntry> & relocs) {
+  relocs = all_relocations_;
+  return true; 
 }
 
 Symtab::Symtab(const Symtab& obj) :
