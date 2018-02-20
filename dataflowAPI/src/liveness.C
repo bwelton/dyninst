@@ -448,7 +448,9 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
 #if defined(x86_64) || defined(x86)
     MachRegister base = cur.getBaseRegister();
     if (cur == x86::flags || cur == x86_64::flags){
+      liveness_printf("In flag location for some reason\n");
       if (width == 4){
+
         ret.read[getIndex(x86::of)] = true;
         ret.read[getIndex(x86::cf)] = true;
         ret.read[getIndex(x86::pf)] = true;
