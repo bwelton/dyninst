@@ -445,7 +445,7 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
     if (cur.getArchitecture() == Arch_ppc64)
 	       cur = MachRegister((cur.val() & ~Arch_ppc64) | Arch_ppc32);
     
-#if defined(x86_64) || defined(x86)
+//#if defined(x86_64) || defined(x86)
     MachRegister base = cur.getBaseRegister();
     liveness_printf("\tis this actually compiling: %s \n", cur.name().c_str());
     if (cur == x86::flags || cur == x86_64::flags){
@@ -482,7 +482,7 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
       ret.read[index] = true;
       liveness_printf("Index is %d\n", index);
     }
-#endif
+//#endif
   }
   liveness_printf("Write Registers: \n"); 
   for (std::set<RegisterAST::Ptr>::const_iterator i = cur_written.begin(); 
@@ -491,7 +491,7 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
     if (cur.getArchitecture() == Arch_ppc64)
 	cur = MachRegister((cur.val() & ~Arch_ppc64) | Arch_ppc32);
     liveness_printf("\t%s \n", cur.name().c_str());
-#if defined(x86_64) || defined(x86)
+//#if defined(x86_64) || defined(x86)
     MachRegister base = cur.getBaseRegister();
     if (cur == x86::flags || cur == x86_64::flags){
       if (width == 4){
@@ -524,7 +524,7 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
       ret.written[index] = true;
       if ((cur != base && cur.size() < 4) || isMMX(base)) ret.read[index] = true;
     }
-#endif
+//#endif
   }
   InsnCategory category = curInsn->getCategory();
   switch(category)
