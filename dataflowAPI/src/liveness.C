@@ -444,9 +444,10 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
     MachRegister cur = (*i)->getID();
     if (cur.getArchitecture() == Arch_ppc64)
 	       cur = MachRegister((cur.val() & ~Arch_ppc64) | Arch_ppc32);
-    liveness_printf("\tis this actually compiling: %s \n", cur.name().c_str());
+    
 #if defined(x86_64) || defined(x86)
     MachRegister base = cur.getBaseRegister();
+    liveness_printf("\tis this actually compiling: %s \n", cur.name().c_str());
     if (cur == x86::flags || cur == x86_64::flags){
       liveness_printf("In flag location for some reason\n");
       if (width == 4){
