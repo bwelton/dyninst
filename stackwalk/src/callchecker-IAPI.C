@@ -49,6 +49,8 @@ bool CallChecker::isPrevInstrACall(Address addr, Address &target)
 
     Address start;
     for (unsigned size = max_call_length; size > 0; size--) {
+        if (addr <= size)
+            continue;
         start = addr - size;
         if (proc->readMem(buffer, start, max_call_length)) break;
     }

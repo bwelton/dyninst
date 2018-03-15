@@ -2396,23 +2396,23 @@ void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
    }
 
    emitLEA(REGNUM_RSP, Null_Register, 0, -off, REGNUM_RSP, gen);
-   emitStoreRelative(REGNUM_R11, saveSlot1, REGNUM_RSP, 8, gen);
+   emitStoreRelative(REGNUM_RAX, saveSlot1, REGNUM_RSP, 8, gen);
    if (saveFlags) {
       emitSimpleInsn(0x9f, gen);
       emitSaveO(gen);
-      emitStoreRelative(REGNUM_R11, saveSlot2, REGNUM_RSP, 8, gen);
+      emitStoreRelative(REGNUM_RAX, saveSlot2, REGNUM_RSP, 8, gen);
    }
-   emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_R11, gen);
+   emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_RAX, gen);
    emitOpRegImm8_64(0x83, EXTENDED_0x83_AND, REGNUM_RSP,
                     -AMD64_STACK_ALIGNMENT, true, gen);
-   emitStoreRelative(REGNUM_R11, 0, REGNUM_RSP, 8, gen);
+   emitStoreRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
    if (saveFlags) {
-      emitLoadRelative(REGNUM_R11, -off+saveSlot2, REGNUM_R11, 8, gen);
+      emitLoadRelative(REGNUM_RAX, -off+saveSlot2, REGNUM_RAX, 8, gen);
       emitRestoreO(gen);
       emitSimpleInsn(0x9e, gen);
-      emitLoadRelative(REGNUM_R11, 0, REGNUM_RSP, 8, gen);
+      emitLoadRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
    }
-   emitLoadRelative(REGNUM_R11, -off+saveSlot1, REGNUM_R11, 8, gen);
+   emitLoadRelative(REGNUM_RAX, -off+saveSlot1, REGNUM_RAX, 8, gen);
 }
 
 bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
@@ -2440,7 +2440,6 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
         gen.rs()->anyLiveFPRsAtEntry()     &&
         //bt->saveFPRs()               &&
         bt->makesCall() );
-   useFPRs = false;
    bool alignStack = useFPRs || !bt || bt->checkForFuncCalls();
    bool saveFlags = gen.rs()->checkVolatileRegisters(gen, registerSlot::live);
    bool createFrame = !bt || bt->needsFrame() || useFPRs;
@@ -2663,7 +2662,7 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
       skippedRedZone = true; // Obviated by alignStack, but hey
       restoreFlags = true;
    }
-   useFPRs = false;
+
    if (useFPRs) {
       // restore saved FP state
       // fxrstor (%rsp) ; 0x0f 0xae 0x04 0x24
