@@ -2440,6 +2440,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
         gen.rs()->anyLiveFPRsAtEntry()     &&
         //bt->saveFPRs()               &&
         bt->makesCall() );
+   useFPRs = false;
    bool alignStack = useFPRs || !bt || bt->checkForFuncCalls();
    bool saveFlags = gen.rs()->checkVolatileRegisters(gen, registerSlot::live);
    bool createFrame = !bt || bt->needsFrame() || useFPRs;
@@ -2662,7 +2663,7 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
       skippedRedZone = true; // Obviated by alignStack, but hey
       restoreFlags = true;
    }
-
+   useFPRs = false;
    if (useFPRs) {
       // restore saved FP state
       // fxrstor (%rsp) ; 0x0f 0xae 0x04 0x24
