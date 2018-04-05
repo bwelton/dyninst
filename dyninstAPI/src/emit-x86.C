@@ -2549,6 +2549,9 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 
    // Pre-calculate space for re-alignment and floating-point state.
    int extra_space = 0;
+   if (saveOrigAddr) {
+      extra_space += 8;
+   }
    if (useFPRs) {
       extra_space += 512;
    }
@@ -2617,6 +2620,15 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
      }
    }
 
+
+   if (saveOrigAddr) {
+      // FIXME use a scratch register!
+      emitMovImmToReg64(REGNUM_RAX, bt->instP()->addr_compat(), true, gen);
+      emitPushReg64(REGNUM_RAX, gen);
+      gen.markRegDefined(REGNUM_RAX);
+      //num_saved++;
+   }
+
    if (bt) {
       bt->savedFPRs = useFPRs;
       bt->wasFullFPRSave = needFXsave;
@@ -2663,6 +2675,9 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
       restoreFlags = true;
    }
 
+   if (saveOrigAddr) {
+     emitPopReg64(REGNUM_RAX, gen);
+   }
    if (useFPRs) {
       // restore saved FP state
       // fxrstor (%rsp) ; 0x0f 0xae 0x04 0x24
