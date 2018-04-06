@@ -2414,8 +2414,10 @@ int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
       emitLoadRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
    }
    emitLoadRelative(REGNUM_RAX, -off+saveSlot1, REGNUM_RAX, 8, gen);
-   return off - saveSlot1;
+   return off + 16;
 }
+
+// 0x7fffffffb238
 
 bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 {
