@@ -2385,6 +2385,7 @@ bool shouldSaveReg(registerSlot *reg, baseTramp *inst, bool saveFlags)
 
 void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
 {
+  return;
    int off = offset + 8 + AMD64_STACK_ALIGNMENT;
    int saveSlot1 =    0 + AMD64_STACK_ALIGNMENT;
    int saveSlot2 =    8 + AMD64_STACK_ALIGNMENT;
