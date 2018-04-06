@@ -2530,7 +2530,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
       emitSimpleInsn(0x55, gen);
       gen.rs()->markSavedRegister(REGNUM_RBP, 0);
       num_saved++;
-
+      num_saved++;
       // And track where it went
       (*gen.rs())[REGNUM_RBP]->liveState = registerSlot::spilled;
       (*gen.rs())[REGNUM_RBP]->spilledState = registerSlot::framePointer;
