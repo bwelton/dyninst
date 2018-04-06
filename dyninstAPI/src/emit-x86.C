@@ -2476,7 +2476,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    if (alignStack) {
       emitStackAlign(AMD64_RED_ZONE, gen);
       // Stack alignment moves the offset of the stack by AMD64_RED_ZONE size;
-      sp_offset += AMD64_RED_ZONE;
+      sp_offset += AMD64_RED_ZONE + 8 + AMD64_STACK_ALIGNMENT;
    } else if (skipRedZone) {
       // Just move %rsp past the red zone 
       // Use LEA to avoid flag modification.
