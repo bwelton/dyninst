@@ -2383,7 +2383,7 @@ bool shouldSaveReg(registerSlot *reg, baseTramp *inst, bool saveFlags)
 //
 // Saving of the flags register can be skipped if the register is not live.
 
-void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
+int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
 {
    int off = offset + 8 + AMD64_STACK_ALIGNMENT;
    int saveSlot1 =    0 + AMD64_STACK_ALIGNMENT;
@@ -2414,6 +2414,7 @@ void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
       emitLoadRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
    }
    emitLoadRelative(REGNUM_RAX, -off+saveSlot1, REGNUM_RAX, 8, gen);
+   return off;
 }
 
 bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
@@ -2474,9 +2475,8 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 
 
    if (alignStack) {
-      emitStackAlign(AMD64_RED_ZONE, gen);
+      sp_offset += emitStackAlign(AMD64_RED_ZONE, gen);
       // Stack alignment moves the offset of the stack by AMD64_RED_ZONE size;
-      sp_offset += AMD64_RED_ZONE + 8 + AMD64_STACK_ALIGNMENT;
    } else if (skipRedZone) {
       // Just move %rsp past the red zone 
       // Use LEA to avoid flag modification.

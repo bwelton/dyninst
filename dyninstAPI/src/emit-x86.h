@@ -240,7 +240,7 @@ public:
     void emitPushFlags(codeGen &gen);
     void emitRestoreFlags(codeGen &gen, unsigned offset);
     void emitRestoreFlagsFromStackSlot(codeGen &gen);
-    void emitStackAlign(int offset, codeGen &gen);
+    int emitStackAlign(int offset, codeGen &gen);
     bool emitBTSaves(baseTramp* bt, codeGen &gen);
     bool emitBTRestores(baseTramp* bt, codeGen &gen);
     void emitStoreImm(Address addr, int imm, codeGen &gen, bool noCost);
