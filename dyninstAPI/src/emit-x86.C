@@ -2403,7 +2403,7 @@ void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
       emitStoreRelative(REGNUM_RAX, saveSlot2, REGNUM_RSP, 8, gen);
    }
    emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_RAX, gen);
-   emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_R11, gen);
+   // emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_R11, gen);
    emitOpRegImm8_64(0x83, EXTENDED_0x83_AND, REGNUM_RSP,
                     -AMD64_STACK_ALIGNMENT, true, gen);
    emitStoreRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
@@ -2447,6 +2447,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    bool saveOrigAddr = createFrame && bt->instP();
 
    //	printf("Saving registers ...\n");
+   uint64_t sp_offset = 0;
    int num_saved = 0;
    int num_to_save = 0;
    //Calculate the number of registers we'll save
@@ -2474,12 +2475,15 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 
    if (alignStack) {
       emitStackAlign(AMD64_RED_ZONE, gen);
+      // Stack alignment moves the offset of the stack by AMD64_RED_ZONE size;
+      sp_offset += AMD64_RED_ZONE;
    } else if (skipRedZone) {
       // Just move %rsp past the red zone 
       // Use LEA to avoid flag modification.
       emitLEA(REGNUM_RSP, Null_Register, 0,
                 -AMD64_RED_ZONE, REGNUM_RSP, gen);
       instFrameSize += AMD64_RED_ZONE;
+      sp_offset += AMD64_RED_ZONE;
    }
 
    
@@ -2523,7 +2527,14 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    // Push RBP...
    if (createFrame)
    {
-      emitPushReg64(REGNUM_R11, gen);
+      // For each register saved so far.
+      sp_offset += (8 * num_saved);
+      // Get a scratch register
+      Register itchy = gen.rs()->getScratchRegister(gen);
+      emitLEA(REGNUM_RSP, Null_Register, 0, sp_offset, itchy, gen);
+      emitPushReg64(itchy, gen);
+      gen.rs()->freeRegister(itchy);
+
       // set up a fresh stack frame
       // pushl %rbp        (0x55)
       // movl  %rsp, %rbp  (0x48 0x89 0xe5)
@@ -2696,7 +2707,9 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
    if (createFrame) {
       // tear down the stack frame (LEAVE)
       emitSimpleInsn(0xC9, gen);
-      emitPopReg64(REGNUM_R11, gen);
+      Register itchy = gen.rs()->getScratchRegister(gen);
+      emitPopReg64(itchy, gen);
+      gen.rs()->freeRegister(itchy);
    }
 
    // pop "fake" return address
