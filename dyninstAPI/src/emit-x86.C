@@ -2479,9 +2479,8 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    bool skipRedZone = (num_to_save > 0) || alignStack || saveOrigAddr || createFrame;
    Register itchy;
    if (createFrame) {
-      itchy = gen.rs()->getScratchRegister(gen);
+      itchy = gen.rs()->allocateRegister(gen, false);
       emitMovRegToReg64(itchy, REGNUM_RSP, true, gen);
-      gen.markRegDefined(itchy);
    }  
 
    if (alignStack) {
