@@ -2481,6 +2481,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    if (createFrame) {
       itchy = gen.rs()->getScratchRegister(gen);
       emitMovRegToReg64(itchy, REGNUM_RSP, true, gen);
+      gen.markRegDefined(itchy);
    }  
 
    if (alignStack) {
@@ -2529,7 +2530,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
       Register origTmp = gen.rs()->getScratchRegister(gen);
       emitMovImmToReg64(origTmp, bt->instP()->addr_compat(), true, gen);
       emitPushReg64(origTmp, gen);
-      gen.rs()->freeRegister(origTmp);
+      //gen.rs()->freeRegister(origTmp);
       //gen.markRegDefined(origTmp);
       num_saved++;
    }
