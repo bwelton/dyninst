@@ -2468,6 +2468,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    if (createFrame) {
       num_to_save++; //will save rbp
       num_to_save++; //Saving SP
+      num_to_save++; //Saving Flag Variable
    }
    if (saveOrigAddr) {
       num_to_save++; //Stack slot for return value, no actual save though
@@ -2475,7 +2476,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    if (saveFlags) {
       num_to_save++;
    }
-         
+  
    bool skipRedZone = (num_to_save > 0) || alignStack || saveOrigAddr || createFrame;
    Register itchy;
    if (createFrame) {
@@ -2547,11 +2548,12 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
       emitPushReg64(itchy, gen);
       gen.rs()->freeRegister(itchy);
 
-      // set up a fresh stack frame
+        // set up a fresh stack frame
       // pushl %rbp        (0x55)
       // movl  %rsp, %rbp  (0x48 0x89 0xe5)
       emitSimpleInsn(0x55, gen);
       gen.rs()->markSavedRegister(REGNUM_RBP, 0);
+      num_saved++;
       num_saved++;
       num_saved++;
       // And track where it went
@@ -2720,6 +2722,7 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
       // tear down the stack frame (LEAVE)
       emitSimpleInsn(0xC9, gen);
       Register itchy = gen.rs()->getScratchRegister(gen);
+      emitPopReg64(itchy, gen);
       emitPopReg64(itchy, gen);
       gen.rs()->freeRegister(itchy);
    }
