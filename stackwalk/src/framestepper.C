@@ -335,8 +335,23 @@ gcframe_ret_t DyninstInstFrameStepperImpl::getCallerFrame(const Frame &in, Frame
 
     Address ret;
     Address framePtr = in.getFP();
+    Address stackPtr = in.getSP();
+
     // Get the address width for the architecture
     const unsigned addr_width = getProcessState()->getAddressWidth();
+
+    // Check if the stackpointer is within 50 stack elements of the frameptr. 
+    // This is protection against reading unintialized memory in cases where we are
+    // walking the stack of an function compiled with an ommitted framepointer.  
+    if (abs(framePtr - stackPtr) > addr_width * 50) {
+      sw_printf("[%s:%u] - Rejecting frame because abs(FP - stackPtr) > 50 stack positions - FP: %lx , SP: %lx\n",
+          FILE__, __LINE__, ret, framePtr, stackPtr);          
+      return gcf_not_me;
+    }
+
+    sw_printf("[%s:%u] - %lx reading from memory at location %lx with framePtr %lx\n",
+        FILE__, __LINE__, ret, framePtr + addr_width);    
+
     if (getWord(ret, framePtr + addr_width)) {    
         // check the return 
         sw_printf("[%s:%u] - %lx read from memory at location %lx\n",
