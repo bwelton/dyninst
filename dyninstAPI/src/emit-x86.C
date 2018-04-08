@@ -2543,6 +2543,8 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
       //Register itchy = gen.rs()->getScratchRegister(gen);
       //emitLEA(REGNUM_RSP, Null_Register, 0, sp_offset, itchy, gen);
       emitPushReg64(itchy, gen);
+      emitMovImmToReg64(itchy, 0xBEEFDEAD, true, gen);
+      emitPushReg64(itchy, gen);
       gen.rs()->freeRegister(itchy);
 
       // set up a fresh stack frame

@@ -141,6 +141,20 @@ class DyninstDynamicStepperImpl : public FrameStepper {
    virtual ~DyninstDynamicStepperImpl();
 };
 
+class DyninstInstFrameStepperImpl : public FrameStepper {
+ private:
+   DyninstDynamicStepper *parent;
+   bool getWord(Address &words, Address start);  
+ public:
+   DyninstInstFrameStepperImpl(Walker *w, DyninstDynamicStepper *p = NULL);
+   virtual gcframe_ret_t getCallerFrame(const Frame &in, Frame &out);
+   virtual unsigned getPriority() const;
+   virtual void registerStepperGroup(StepperGroup *group);
+   virtual const char *getName() const;
+   virtual ~DyninstInstFrameStepperImpl();
+};
+
+
 class CallChecker {
   private:
    ProcessState * proc;
