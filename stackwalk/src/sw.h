@@ -146,7 +146,7 @@ class DyninstInstFrameStepperImpl : public FrameStepper {
    DyninstDynamicStepper *parent;
    bool getWord(Address &words, Address start);  
  public:
-   DyninstInstFrameStepperImpl(Walker *w);
+   DyninstInstFrameStepperImpl(Walker *w, DyninstInstFrameStepper *p = NULL);
    virtual gcframe_ret_t getCallerFrame(const Frame &in, Frame &out);
    virtual unsigned getPriority() const;
    virtual void registerStepperGroup(StepperGroup *group);

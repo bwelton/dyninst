@@ -321,8 +321,9 @@ DyninstDynamicStepperImpl::~DyninstDynamicStepperImpl()
 {
 }
 
-DyninstInstFrameStepperImpl::DyninstInstFrameStepperImpl(Walker *w) :
-  FrameStepper(w)
+DyninstInstFrameStepperImpl::DyninstInstFrameStepperImpl(Walker *w, DyninstInstFrameStepper *p) :
+  FrameStepper(w),
+  parent(p)
 {
 }
 
