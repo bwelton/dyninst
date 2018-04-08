@@ -60,11 +60,6 @@ bool Walker::createDefaultSteppers()
   LookupFuncStart *frameFuncHelper_x86;
   bool result = true;
 
-  stepper = new DyninstInstFrameStepper(this);
-  result = addStepper(stepper);
-  if (!result)
-     goto error;
-
   stepper = new DebugStepper(this);
   result = addStepper(stepper);
   if (!result)
@@ -112,6 +107,11 @@ bool Walker::createDefaultSteppers()
   sw_printf("[%s:%u] - Stepper %p is AnalysisStepper\n",
             FILE__, __LINE__, stepper);
 #endif
+
+  stepper = new DyninstInstFrameStepper(this);
+  result = addStepper(stepper);
+  if (!result)
+     goto error;
 
   return true;
  error:
