@@ -344,8 +344,8 @@ gcframe_ret_t DyninstInstFrameStepperImpl::getCallerFrame(const Frame &in, Frame
     // This is protection against reading unintialized memory in cases where we are
     // walking the stack of an function compiled with an ommitted framepointer.  
     if (abs(framePtr - stackPtr) > addr_width * 50) {
-      sw_printf("[%s:%u] - Rejecting frame because abs(FP - stackPtr) > 50 stack positions - FP: %lx , SP: %lx\n",
-          FILE__, __LINE__, ret, framePtr, stackPtr);          
+      sw_printf("[%s:%u] - Rejecting frame because abs(FP - stackPtr) > 50 stack positions - FP: %lx , SP: %lx, DIFF: %lx, Check: %lx\n",
+          FILE__, __LINE__, framePtr, stackPtr, abs(framePtr - stackPtr),  addr_width * 50);          
       return gcf_not_me;
     }
 
