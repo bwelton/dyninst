@@ -60,10 +60,10 @@ bool Walker::createDefaultSteppers()
   LookupFuncStart *frameFuncHelper_x86;
   bool result = true;
 
-  // stepper = new DyninstInstFrameStepperImpl(this);
-  // result = addStepper(stepper);
-  // if (!result)
-  //    goto error;
+  stepper = new DyninstInstFrameStepper(this);
+  result = addStepper(stepper);
+  if (!result)
+     goto error;
 
   stepper = new DebugStepper(this);
   result = addStepper(stepper);
