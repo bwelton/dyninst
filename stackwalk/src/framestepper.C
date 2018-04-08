@@ -514,6 +514,7 @@ DyninstInstFrameStepperImpl::~DyninstInstFrameStepperImpl()
 #define PIMPL_IMPL_CLASS DyninstInstFrameStepperImpl
 #define PIMPL_CLASS DyninstInstFrameStepper
 #define PIMPL_NAME "DyninstInstFrameStepper"
+#define PIMPL_ARG1 DyninstInstFrameStepper*
 #include "framestepper_pimple.h"
 #undef PIMPL_CLASS
 #undef PIMPL_IMPL_CLASS
