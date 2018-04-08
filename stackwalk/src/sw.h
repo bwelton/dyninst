@@ -143,7 +143,7 @@ class DyninstDynamicStepperImpl : public FrameStepper {
 
 class DyninstInstFrameStepperImpl : public FrameStepper {
  private:
-   DyninstDynamicStepper *parent;
+   DyninstInstFrameStepper *parent;
    bool getWord(Address &words, Address start);  
  public:
    DyninstInstFrameStepperImpl(Walker *w, DyninstInstFrameStepper *p = NULL);
