@@ -344,9 +344,9 @@ gcframe_ret_t DyninstInstFrameStepperImpl::getCallerFrame(const Frame &in, Frame
     // Check if the stackpointer is within 50 stack elements of the frameptr. 
     // This is protection against reading unintialized memory in cases where we are
     // walking the stack of an function compiled with an ommitted framepointer.  
-    if ( diff >= 400 ) {
-      sw_printf("[%s:%u] - I am Rejecting frame because (FP - stackPtr) > 50 stack positions - FP: %lx , SP: %lx, DIFF: %llu, Check: %u\n",
-          FILE__, __LINE__, framePtr, stackPtr, diff,  (addr_width * 50));          
+    if ( diff >= (addr_width * 500) ) {
+      sw_printf("[%s:%u] - I am Rejecting frame because (FP - stackPtr) > 500 stack positions - FP: %lx , SP: %lx, DIFF: %llu, Check: %u\n",
+          FILE__, __LINE__, framePtr, stackPtr, diff,  (addr_width * 500));          
       return gcf_not_me;
     }
 
