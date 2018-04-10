@@ -2392,7 +2392,7 @@ int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
    bool saveFlags = false;
    Register scratch =  gen.rs()->getScratchRegister(gen);
    if (scratch == REG_NULL)
-      scratch = REGNUM_RDP;
+      scratch = REGNUM_RBP;
 
    if (gen.rs()->checkVolatileRegisters(gen, registerSlot::live)) {
       saveFlags = true;   // We need to save the flags register
