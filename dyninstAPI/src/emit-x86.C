@@ -2392,7 +2392,7 @@ int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
    bool saveFlags = false;
    Register scratch =  gen.rs()->getScratchRegister(gen);
    if (scratch == REG_NULL)
-      scratch = REGNUM_RBP;
+      scratch = REGNUM_RAX;
 
    if (gen.rs()->checkVolatileRegisters(gen, registerSlot::live)) {
       saveFlags = true;   // We need to save the flags register
@@ -2480,14 +2480,14 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    }
   
    bool skipRedZone = (num_to_save > 0) || alignStack || saveOrigAddr || createFrame;
-   Register itchy;
-   if (createFrame) {
-      itchy = gen.rs()->allocateRegister(gen, false);
-      emitMovRegToReg64(itchy, REGNUM_RSP, true, gen);
-   }  
+   // Register itchy;
+   // if (createFrame) {
+   //    itchy = gen.rs()->allocateRegister(gen, false);
+   //    emitMovRegToReg64(itchy, REGNUM_RSP, true, gen);
+   // }  
 
    if (alignStack) {
-      sp_offset += emitStackAlign(AMD64_RED_ZONE, gen);
+      emitStackAlign(AMD64_RED_ZONE, gen);
       // Stack alignment moves the offset of the stack by AMD64_RED_ZONE size;
    } else if (skipRedZone) {
       // Just move %rsp past the red zone 
@@ -2540,12 +2540,19 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    // Push RBP...
    if (createFrame)
    {
+      Register itchy = gen.rs()->getScratchRegister(gen);
+
       // For each register saved so far.
-      //sp_offset += (8 * num_saved);
-      // Get a scratch register
-      //Register itchy = gen.rs()->getScratchRegister(gen);
-      //emitLEA(REGNUM_RSP, Null_Register, 0, sp_offset, itchy, gen);
-      emitPushReg64(itchy, gen);
+      sp_offset += (8 * num_saved);
+      // Load the register off of the algined stack
+      if (alignStack) {
+        emitLoadRelative(scratch, sp_offset, REGNUM_RSP, 8, gen);
+        emitPushReg64(itchy, gen);
+      } else {
+        // Otherwise, the SP is exactly sp_offset away
+        emitLEA(REGNUM_RSP, Null_Register, 0, sp_offset, itchy, gen);
+        emitPushReg64(itchy, gen);
+      }
       emitMovImmToReg64(itchy, 0xBEEFDEAD, true, gen);
       emitPushReg64(itchy, gen);
       gen.rs()->freeRegister(itchy);
