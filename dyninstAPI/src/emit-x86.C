@@ -2391,6 +2391,9 @@ int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
 
    bool saveFlags = false;
    Register scratch =  gen.rs()->getScratchRegister(gen);
+   if (scratch == REG_NULL)
+      scratch = REGNUM_RDP;
+
    if (gen.rs()->checkVolatileRegisters(gen, registerSlot::live)) {
       saveFlags = true;   // We need to save the flags register
       off += 8;           // Allocate stack space to store the flags
@@ -2415,7 +2418,6 @@ int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
       emitLoadRelative(scratch, 0, REGNUM_RSP, 8, gen);
    }
    emitLoadRelative(scratch, -off+saveSlot1, scratch, 8, gen);
-   gen.rs()->freeRegister(scratch); 
 
    return off;
 }
