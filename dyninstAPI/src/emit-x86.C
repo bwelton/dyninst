@@ -2546,7 +2546,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
       sp_offset += (8 * num_saved);
       // Load the register off of the algined stack
       if (alignStack) {
-        emitLoadRelative(scratch, sp_offset, REGNUM_RSP, 8, gen);
+        emitLoadRelative(itchy, sp_offset, REGNUM_RSP, 8, gen);
         emitPushReg64(itchy, gen);
       } else {
         // Otherwise, the SP is exactly sp_offset away
