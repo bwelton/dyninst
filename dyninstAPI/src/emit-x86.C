@@ -2383,37 +2383,46 @@ bool shouldSaveReg(registerSlot *reg, baseTramp *inst, bool saveFlags)
 //
 // Saving of the flags register can be skipped if the register is not live.
 
-void EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
+int EmitterAMD64::emitStackAlign(int offset, codeGen &gen)
 {
    int off = offset + 8 + AMD64_STACK_ALIGNMENT;
    int saveSlot1 =    0 + AMD64_STACK_ALIGNMENT;
    int saveSlot2 =    8 + AMD64_STACK_ALIGNMENT;
 
    bool saveFlags = false;
+   Register scratch =  gen.rs()->getScratchRegister(gen);
+   if (scratch == REG_NULL)
+      scratch = REGNUM_RAX;
+
    if (gen.rs()->checkVolatileRegisters(gen, registerSlot::live)) {
       saveFlags = true;   // We need to save the flags register
       off += 8;           // Allocate stack space to store the flags
    }
 
    emitLEA(REGNUM_RSP, Null_Register, 0, -off, REGNUM_RSP, gen);
-   emitStoreRelative(REGNUM_RAX, saveSlot1, REGNUM_RSP, 8, gen);
+   emitStoreRelative(scratch, saveSlot1, REGNUM_RSP, 8, gen);
    if (saveFlags) {
       emitSimpleInsn(0x9f, gen);
       emitSaveO(gen);
-      emitStoreRelative(REGNUM_RAX, saveSlot2, REGNUM_RSP, 8, gen);
+      emitStoreRelative(scratch, saveSlot2, REGNUM_RSP, 8, gen);
    }
-   emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_RAX, gen);
+   emitLEA(REGNUM_RSP, Null_Register, 0, off, scratch, gen);
+   // emitLEA(REGNUM_RSP, Null_Register, 0, off, REGNUM_R11, gen);
    emitOpRegImm8_64(0x83, EXTENDED_0x83_AND, REGNUM_RSP,
                     -AMD64_STACK_ALIGNMENT, true, gen);
-   emitStoreRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
+   emitStoreRelative(scratch, 0, REGNUM_RSP, 8, gen);
    if (saveFlags) {
-      emitLoadRelative(REGNUM_RAX, -off+saveSlot2, REGNUM_RAX, 8, gen);
+      emitLoadRelative(scratch, -off+saveSlot2, scratch, 8, gen);
       emitRestoreO(gen);
       emitSimpleInsn(0x9e, gen);
-      emitLoadRelative(REGNUM_RAX, 0, REGNUM_RSP, 8, gen);
+      emitLoadRelative(scratch, 0, REGNUM_RSP, 8, gen);
    }
-   emitLoadRelative(REGNUM_RAX, -off+saveSlot1, REGNUM_RAX, 8, gen);
+   emitLoadRelative(scratch, -off+saveSlot1, scratch, 8, gen);
+
+   return off;
 }
+
+// 0x7fffffffb238
 
 bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 {
@@ -2446,6 +2455,7 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    bool saveOrigAddr = createFrame && bt->instP();
 
    //	printf("Saving registers ...\n");
+   uint64_t sp_offset = 0;
    int num_saved = 0;
    int num_to_save = 0;
    //Calculate the number of registers we'll save
@@ -2459,6 +2469,8 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    }
    if (createFrame) {
       num_to_save++; //will save rbp
+      num_to_save++; //Saving SP
+      num_to_save++; //Saving Flag Variable
    }
    if (saveOrigAddr) {
       num_to_save++; //Stack slot for return value, no actual save though
@@ -2466,18 +2478,24 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
    if (saveFlags) {
       num_to_save++;
    }
-         
+  
    bool skipRedZone = (num_to_save > 0) || alignStack || saveOrigAddr || createFrame;
-
+   // Register itchy;
+   // if (createFrame) {
+   //    itchy = gen.rs()->allocateRegister(gen, false);
+   //    emitMovRegToReg64(itchy, REGNUM_RSP, true, gen);
+   // }  
 
    if (alignStack) {
       emitStackAlign(AMD64_RED_ZONE, gen);
+      // Stack alignment moves the offset of the stack by AMD64_RED_ZONE size;
    } else if (skipRedZone) {
       // Just move %rsp past the red zone 
       // Use LEA to avoid flag modification.
       emitLEA(REGNUM_RSP, Null_Register, 0,
                 -AMD64_RED_ZONE, REGNUM_RSP, gen);
       instFrameSize += AMD64_RED_ZONE;
+      sp_offset += AMD64_RED_ZONE;
    }
 
    
@@ -2511,23 +2529,42 @@ bool EmitterAMD64::emitBTSaves(baseTramp* bt,  codeGen &gen)
 
    // push a return address for stack walking
    if (saveOrigAddr) {
-      // FIXME use a scratch register!
-      emitMovImmToReg64(REGNUM_RAX, bt->instP()->addr_compat(), true, gen);
-      emitPushReg64(REGNUM_RAX, gen);
-      gen.markRegDefined(REGNUM_RAX);
+      Register origTmp = gen.rs()->getScratchRegister(gen);
+      emitMovImmToReg64(origTmp, bt->instP()->addr_compat(), true, gen);
+      emitPushReg64(origTmp, gen);
+      //gen.rs()->freeRegister(origTmp);
+      //gen.markRegDefined(origTmp);
       num_saved++;
    }
 
    // Push RBP...
    if (createFrame)
    {
-      // set up a fresh stack frame
+      Register itchy = gen.rs()->getScratchRegister(gen);
+
+      // For each register saved so far.
+      sp_offset += (8 * num_saved);
+      // Load the register off of the algined stack
+      if (alignStack) {
+        emitLoadRelative(itchy, sp_offset, REGNUM_RSP, 8, gen);
+        emitPushReg64(itchy, gen);
+      } else {
+        // Otherwise, the SP is exactly sp_offset away
+        emitLEA(REGNUM_RSP, Null_Register, 0, sp_offset, itchy, gen);
+        emitPushReg64(itchy, gen);
+      }
+      emitMovImmToReg64(itchy, 0xBEEFDEAD, true, gen);
+      emitPushReg64(itchy, gen);
+      gen.rs()->freeRegister(itchy);
+
+        // set up a fresh stack frame
       // pushl %rbp        (0x55)
       // movl  %rsp, %rbp  (0x48 0x89 0xe5)
       emitSimpleInsn(0x55, gen);
       gen.rs()->markSavedRegister(REGNUM_RBP, 0);
       num_saved++;
-
+      num_saved++;
+      num_saved++;
       // And track where it went
       (*gen.rs())[REGNUM_RBP]->liveState = registerSlot::spilled;
       (*gen.rs())[REGNUM_RBP]->spilledState = registerSlot::framePointer;
@@ -2693,6 +2730,10 @@ bool EmitterAMD64::emitBTRestores(baseTramp* bt, codeGen &gen)
    if (createFrame) {
       // tear down the stack frame (LEAVE)
       emitSimpleInsn(0xC9, gen);
+      Register itchy = gen.rs()->getScratchRegister(gen);
+      emitPopReg64(itchy, gen);
+      emitPopReg64(itchy, gen);
+      gen.rs()->freeRegister(itchy);
    }
 
    // pop "fake" return address

@@ -462,9 +462,12 @@ bool BinaryEdit::getAllDependencies(std::map<std::string, BinaryEdit*>& deps)
    Symtab *symtab = mobj->parse_img()->getObject();
    std::deque<std::string> depends;
    depends.insert(depends.end(), symtab->getDependencies().begin(), symtab->getDependencies().end());
+   fprintf(stderr, "%s: %llu\n", "Found this many dependencies", depends.size());
    while(!depends.empty())
    {
      std::string lib = depends.front();
+     fprintf(stderr, "Loading depends: %s\n", lib.c_str());
+
      if(deps.find(lib) == deps.end()) {
         std::map<std::string, BinaryEdit*> res;
         if(!openResolvedLibraryName(lib, res)) return false;
@@ -474,9 +477,11 @@ bool BinaryEdit::getAllDependencies(std::map<std::string, BinaryEdit*>& deps)
              deps.insert(*bedit_it);
              if(!bedit_it->second->getAllDependencies(deps))
              {
+              fprintf(stderr, "Returning False #1\n");
                return false;
              }
            } else {
+            fprintf(stderr, "Returning False #2\n");
              return false;
            }
          }

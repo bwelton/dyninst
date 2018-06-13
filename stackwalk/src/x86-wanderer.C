@@ -72,6 +72,8 @@ void StepperWandererImpl::registerStepperGroup(StepperGroup *group) {
 
 gcframe_ret_t StepperWandererImpl::getCallerFrame(const Frame &in, Frame &out)
 {
+  // Disable the wanderer....
+  return gcf_not_me;
    sw_printf("[%s:%u] - Wanderer attempting to walk from 0x%lx\n",
              FILE__, __LINE__, in.getRA());
 

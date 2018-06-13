@@ -443,13 +443,13 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
   {
     MachRegister cur = (*i)->getID();
     if (cur.getArchitecture() == Arch_ppc64)
-	cur = MachRegister((cur.val() & ~Arch_ppc64) | Arch_ppc32);
+	     cur = MachRegister((cur.val() & ~Arch_ppc64) | Arch_ppc32);
     liveness_printf("\t%s \n", cur.name().c_str());
     MachRegister base = cur.getBaseRegister();
     if (cur == x86::flags || cur == x86_64::flags){
       if (width == 4){
         ret.read[getIndex(x86::of)] = true;
-        ret.read[getIndex(x86::cf)] = true;
+        ret.read[getIndex(x86::cf)] = true;l
         ret.read[getIndex(x86::pf)] = true;
         ret.read[getIndex(x86::af)] = true;
         ret.read[getIndex(x86::zf)] = true;
