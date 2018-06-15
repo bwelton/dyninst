@@ -37,6 +37,8 @@
 #include "dyninstAPI/src/emit-power.h"
 #include "dyninstAPI/src/function.h"
 
+#include "common/src/arch-power.h"
+
 #if defined(os_vxworks)
 #include "common/src/wtxKludges.h"
 #endif
@@ -60,13 +62,30 @@ codeBuf_t *insnCodeGen::ptrAndInc(codeGen &gen) {
 #endif
 
 void insnCodeGen::generate(codeGen &gen, instruction&insn) {
-#if defined(endian_mismatch)
-  // Writing an instruction.  Convert byte order if necessary.
-  unsigned raw = swapBytesIfNeeded(insn.asInt());
-#else
+  /*
+  AddressSpace *as = gen.addrSpace();
+  bool isLittleEndian = true;
+  if (as) {
+    const pdvector<mapped_object*> objs = as->mappedObjects();
+    if (objs.size() > 0) {
+      mapped_object *mo = objs[0];
+      SymtabAPI::Symtab* sym = mo->parse_img()->getObject(); 
+      isLittleEndian = !sym->isBigEndianDataEncoding();
+    } else {
+      fprintf(stderr, "No mapped_object object\n");
+    }
+  } else {
+    fprintf(stderr, "No AddressSpace object\n");
+  }
+  unsigned raw;
+  if (isLittleEndian) {
+    // Writing an instruction.  Convert byte order if necessary.
+    raw = swapBytesIfNeeded(insn.asInt());
+  } else {
+    raw = insn.asInt();
+  }
+  */
   unsigned raw = insn.asInt();
-#endif
-  
   gen.copy(&raw, sizeof(unsigned));
 }
 

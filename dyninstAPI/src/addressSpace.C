@@ -1781,7 +1781,10 @@ bool AddressSpace::relocateInt(FuncSet::const_iterator begin, FuncSet::const_ite
         (cm->ptr(),cm->size(),getArch());
       Instruction::Ptr insn = deco.decode();
       while(insn) {
-         cerr << "\t" << hex << base << ": " << insn->format(base) << dec << endl;
+         cerr << "\t" << hex << base << ": ";
+         for (int i = 0; i < insn->size(); ++i)
+             fprintf(stderr, "%02x", ((char*)(insn->ptr()))[i]);
+         cerr << " " <<  insn->format(base) << dec << endl;
         base += insn->size();
         insn = deco.decode();
       }
