@@ -677,7 +677,7 @@ bool AddressSpace::inferiorExpandBlock(heapItem *h,
 bool AddressSpace::findFuncsByAll(const std::string &funcname,
                                   pdvector<func_instance *> &res,
                                   const std::string &libname) { // = "", btw
-    
+   std::cerr << "[AddressSpace] Finding function - " << funcname << " in library " << libname << std::endl;
    unsigned starting_entries = res.size(); // We'll return true if we find something
    for (unsigned i = 0; i < mapped_objects.size(); i++) {
       if (libname == "" ||
