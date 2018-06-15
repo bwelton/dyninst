@@ -138,6 +138,8 @@ bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
             return true;            
          }
          case CFPatch::Call: {
+            relocation_cerr << "\t\t\t Generating CFPatch::Call from " 
+                            << hex << gen.currAddr() << " to " << buf->predictedAddr(targetLabel) << dec << endl;            
             if (!insnCodeGen::modifyCall(buf->predictedAddr(targetLabel), *ugly_insn, gen)) {
 	      relocation_cerr << "modifyCall failed, ret false" << endl;
                return false;
@@ -145,6 +147,8 @@ bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
             return true;
          }
          case CFPatch::Data: {
+            relocation_cerr << "\t\t\t Generating CFPatch::Data from " 
+                            << hex << gen.currAddr() << " to " << buf->predictedAddr(targetLabel) << dec << endl;            
             if (!insnCodeGen::modifyData(buf->predictedAddr(targetLabel), *ugly_insn, gen)) {
 	      relocation_cerr << "modifyData failed, ret false" << endl;
                return false;

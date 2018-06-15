@@ -519,6 +519,7 @@ void SpringboardBuilder::generateBranch(Address from, Address to, codeGen &gen) 
   insnCodeGen::generateBranch(gen, from, to);
 
   springboard_cerr << "Generated springboard branch " << hex << from << "->" << to << dec << endl;
+  springboard_cerr << "\t" << gen.format() << endl; 
 }
 
 void SpringboardBuilder::generateTrap(Address from, Address to, codeGen &gen) {

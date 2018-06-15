@@ -37,6 +37,7 @@ std::string PPCFormatter::formatImmediate(std::string evalString) {
 }
 
 std::string PPCFormatter::formatRegister(std::string regName) {
+/*
     if (regName == "ppc64::pc"  || 
         regName == "ppc64::ctr" || 
         regName == "ppc64::lr"  ||
@@ -44,6 +45,7 @@ std::string PPCFormatter::formatRegister(std::string regName) {
 
         return "";
     }
+*/
     std::string::size_type lastColon = regName.rfind(':');
     std::string ret = regName;
 
