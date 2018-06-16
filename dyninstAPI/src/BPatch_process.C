@@ -1029,6 +1029,8 @@ BPatch_object *BPatch_process::loadLibrary(const char *libname, bool)
          BPatch_reportError(BPatchSerious, 100, msg.c_str());
       }
       BPatch_function *dlopen_func = bpfv[0];
+      fprintf(stderr, "[BPatch_process::LoadLibrary] Number of DYNINSTloadLibrary calls returned: %llu\n", bpfv.size());
+      fprintf(stderr, "[BPatch_process::LoadLibrary] Position of the entry point: %llu\n",((uint64_t) bpfv[0]->getBaseAddr()));
       if (dlopen_func == NULL)
         break;
 
