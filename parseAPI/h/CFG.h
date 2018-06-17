@@ -485,7 +485,7 @@ class PARSER_EXPORT Function : public allocatable, public AnnotatableSparse {
 
     virtual const std::string & name() const;
 
-    Address addr() const { return _start + 0x8; }
+    Address addr() const { return _start; }
     CodeRegion * region() const { return _region; }
     InstructionSource * isrc() const { return _isrc; }
     CodeObject * obj() const { return _obj; }
