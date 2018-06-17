@@ -3379,6 +3379,9 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
     int scratchReg = 0;
     if (needLongBranch) {
         // Use scratchReg to set destination of the call...
+
+        inst_printf("[EmitterPOWER::EmitCallInstruction] needLongBranch, Emitting VLOAD  Callee: 0x%lx, ScratchReg: %u\n",
+                    gen.currAddr(), (unsigned) scratchReg);
         emitVload(loadConstOp, callee->addr(), scratchReg, scratchReg, gen, false);
         insnCodeGen::generateMoveToLR(gen, scratchReg);
         inst_printf("Generated LR value in %d\n", scratchReg);
@@ -3387,6 +3390,8 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
 
     // Linux 64
     if (setTOC) {
+        inst_printf("[EmitterPOWER::EmitCallInstruction] Setting TOC anchor, toc_anchor: %lx, register: 2(fixed)\n",
+                    (uint64_t)toc_anchor);
         // Set up the new TOC value
         emitVload(loadConstOp, toc_anchor, 2, 2, gen, false);
         //inst_printf("toc setup (%d)...");
@@ -3400,6 +3405,8 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
         inst_printf("Generated BRL\n");
     }
     else {
+        inst_printf("[EmitterPOWER::EmitCallInstruction] Generating Call, curAddress: %lx, calleeAddr: %lx\n",
+                     gen.currAddr(), callee->addr());
         insnCodeGen::generateCall(gen, gen.currAddr(), callee->addr());
         inst_printf("Generated short call from 0x%lx to 0x%lx\n",
                 gen.currAddr(), callee->addr());
