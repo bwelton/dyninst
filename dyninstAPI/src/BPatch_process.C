@@ -49,6 +49,7 @@
 #include "BPatch.h"
 #include "BPatch_point.h"
 #include "BPatch_thread.h"
+#include "BPatch_object.h"
 #include "BPatch_function.h"
 #include "BPatch_basicBlock.h"
 #include "BPatch_module.h"
