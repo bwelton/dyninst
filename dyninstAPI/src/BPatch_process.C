@@ -1021,7 +1021,7 @@ BPatch_object *BPatch_process::loadLibrary(const char *libname, bool)
       BPatch_Vector<BPatch_function*> all_functions_in_binary;
       image->getProcedures(all_functions_in_binary, true);
       for (auto ifn : all_functions_in_binary) {
-         fprintf(stderr, "[AllFuncDump] %s %llx\n", ifn->getModule()->getObject()->pathName(),  ((uint64_t )ifn->getBaseAddr()) - ((uint64_t) ifn->getModule()->getBaseAddr()));
+         fprintf(stderr, "[AllFuncDump] %s %llx\n", ifn->getModule()->getObject()->pathName().c_str(),  ((uint64_t )ifn->getBaseAddr()) - ((uint64_t) ifn->getModule()->getBaseAddr()));
       }
       image->findFunction("DYNINSTloadLibrary", bpfv);
       if (!bpfv.size()) {
