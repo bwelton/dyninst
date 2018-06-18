@@ -127,7 +127,7 @@ void insnCodeGen::generateBranch(codeGen &gen, long disp, bool link)
 void insnCodeGen::generateBranch(codeGen &gen, Address from, Address to, bool link) {
 
     long disp = (to - from);
-
+    fprintf(stderr, "[insnCodeGen::generateBranch] Generating branch from %p to %p\n", from, to);
     if (ABS(disp) > MAX_BRANCH) {
         return generateLongBranch(gen, from, to, link);
     }
@@ -144,6 +144,7 @@ void insnCodeGen::generateInterFunctionBranch(codeGen &gen,
                                               Address from,
                                               Address to,
                                               bool link) {
+     fprintf(stderr, "[insnCodeGen::generateInterFunctionBranch] Generating branch from %p to %p\n", from, to);
     long disp = to - from;
 
     if (ABS(disp) <= MAX_BRANCH) {
@@ -173,6 +174,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
                                      Address from, 
                                      Address to, 
                                      bool isCall) {
+  fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
     // First, see if we can cheap out
     long disp = (to - from);
     if (ABS(disp) <= MAX_BRANCH) {
@@ -264,6 +266,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
 
 void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, bool isCall) {
 
+  fprintf(stderr, "[insnCodeGen::generateBranchViaTrap] Generating branch via trap from %p to %p\n", from, to);
     long disp = to - from;
     if (ABS(disp) <= MAX_BRANCH) {
         // We shouldn't be here, since this is an internal-called-only func.
