@@ -3401,8 +3401,9 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
 
     // ALL dynamic; call instruction generation
     if (needLongBranch) {
-        instruction brl(BRraw);
-        insnCodeGen::generate(gen,brl);
+        insnCodeGen::generateCall(gen, gen.currAddr(), callee->addr());
+        //instruction brl(BRraw);
+        //insnCodeGen::generate(gen,brl);
         inst_printf("Generated BRL\n");
     }
     else {
