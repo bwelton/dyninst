@@ -661,8 +661,8 @@ typedef unsigned codeBufIndex_t;
 #define MR12CTR        0x7d8903a6      /* move from r12 to CTR */
 #define BCTRraw        0x4e800420      /* bctr instrunction */
 #define BCTRLraw       0x4e800421      /* bctrl instrunction */
-#define BRraw          0x4e800020      /* br instruction */
-#define BRLraw         0x4e800021      /* branch and link to link reg */
+#define BRraw          0x4e800020      /* br instruction bclr */
+#define BRLraw         0x4e800021      /* branch and link to link reg bclrl */
 #define NOOPraw        0x60000000      /* noop, d form ORIL 0, 0, 0 */
 
 // -------------------------- Branch fields ------------------------------
