@@ -3382,7 +3382,7 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
         shouldJumpToCMOD = true;
         inst_printf("[EmitterPOWER::EmitCallInstruction] needLongBranch, Emitting VLOAD  Callee: 0x%lx, ScratchReg: %u\n",
                     callee->addr(), (unsigned) scratchReg);
-        emitVload(loadConstOp, callee->addr() + 0x8, scratchReg, scratchReg, gen, false);
+        emitVload(loadConstOp, callee->addr(), scratchReg, scratchReg, gen, false);
         insnCodeGen::generateMoveToLR(gen, scratchReg);
 
         inst_printf("Generated LR value in %d\n", scratchReg);
