@@ -3411,8 +3411,9 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
                      gen.currAddr(), callee->addr());
         if (gen.currAddr() == 0x100000120f80) {
             fprintf(stderr, "we are here, break now\n");
+        } else {
+            emitVload(loadConstOp, callee->addr(), 12, 12, gen, false);
         }
-        emitVload(loadConstOp, callee->addr(), 12, 12, gen, false);
         insnCodeGen::generateCall(gen, gen.currAddr(), callee->addr());
 
         inst_printf("Generated short call from 0x%lx to 0x%lx\n",
