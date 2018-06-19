@@ -37,11 +37,42 @@
 #include "dyninstAPI/src/emit-power.h"
 #include "dyninstAPI/src/function.h"
 
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <set>
+#include <memory>
+#include <fstream>
 #include "common/src/arch-power.h"
-
+#include <sstream>
 #if defined(os_vxworks)
 #include "common/src/wtxKludges.h"
 #endif
+
+class TrackStacktraces {
+  std::ofstream _out;
+  std::set<std::string> _stacks;
+  TrackStacktraces() {
+    _out.open("generatorStacks.txt", std::ofstream::out);
+  };
+
+  void Insert(std::string s) {
+    if (_stacks.find(s) == _stacks.end())
+      _stacks.insert(s);
+  }
+  ~TrackStacktraces() {
+    for (auto i : _stacks)
+      _out << i << std::endl;
+    _out.close();
+  }
+
+};
+
+
+std::shared_ptr<TrackStacktraces> _global_stack_track;
+
+
 
 // "Casting" methods. We use a "base + offset" model, but often need to 
 // turn that into "current instruction pointer".
@@ -62,6 +93,17 @@ codeBuf_t *insnCodeGen::ptrAndInc(codeGen &gen) {
 #endif
 
 void insnCodeGen::generate(codeGen &gen, instruction&insn) {
+  void *buffer[50];
+  char **strings;
+  int nptrs;
+  nptrs = backtrace(buffer, 50);
+  strings = backtrace_symbols(buffer, nptrs);
+  std::stringstream ss;
+  if (strings != NULL) {
+    for (int i = 0; i < nptrs; i++) 
+      ss << strings[i] << std::endl;
+  }
+
   /*
   AddressSpace *as = gen.addrSpace();
   bool isLittleEndian = true;
@@ -85,6 +127,9 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
     raw = insn.asInt();
   }
   */
+  if (_global_stack_track.get() == NULL)
+    _global_stack_track.reset(new TrackStacktraces());
+  _global_stack_track->Insert(ss.str());
   unsigned raw = insn.asInt();
   gen.copy(&raw, sizeof(unsigned));
 }
