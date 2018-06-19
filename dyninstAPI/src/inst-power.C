@@ -702,7 +702,7 @@ void resetBR(AddressSpace  *p,    //Process to write instruction into
 	     Address   loc)  //Address in process to write into
 {
     instruction i = BRraw;
-
+/
     if (!p->writeDataSpace((void *)loc, instruction::size(), i.ptr()))
         fprintf(stderr, "%s[%d]:  writeDataSpace failed\n", FILE__, __LINE__);
 }
@@ -3410,8 +3410,12 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
     else {
         inst_printf("[EmitterPOWER::EmitCallInstruction] Generating Call, curAddress: %lx, calleeAddr: %lx\n",
                      gen.currAddr(), callee->addr());
+        if (gen.currAddr() == 0x100000120f80) {
+            fprintf(stderr, "we are here, break now\n");
+        }
         emitVload(loadConstOp, callee->addr(), 12, 12, gen, false);
         insnCodeGen::generateCall(gen, gen.currAddr(), callee->addr());
+
         inst_printf("Generated short call from 0x%lx to 0x%lx\n",
                 gen.currAddr(), callee->addr());
     }
