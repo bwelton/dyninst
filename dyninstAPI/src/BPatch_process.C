@@ -1027,7 +1027,7 @@ BPatch_object *BPatch_process::loadLibrary(const char *libname, bool)
             name = std::string("Unknown");
          fprintf(allFuncFile, "[AllFuncDump] %s %s %llx %llx\n", ifn->getModule()->getObject()->pathName().c_str(), name.c_str(), ((uint64_t )ifn->getBaseAddr()) - ((uint64_t) ifn->getModule()->getBaseAddr()), ((uint64_t )ifn->getBaseAddr()));
       }
-      fclose(allfuncfile);
+      fclose(allFuncFile);
       image->findFunction("DYNINSTloadLibrary", bpfv);
       if (!bpfv.size()) {
          cerr << __FILE__ << ":" << __LINE__ << ": FATAL:  Cannot find Internal"
