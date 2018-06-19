@@ -70,7 +70,8 @@ Address PCProcess::getTOCoffsetInfo(Address dest) {
     // Very odd case if this is not defined.
     assert(mobj);
     Address TOCOffset = mobj->parse_img()->getObject()->getTOCoffset();
-    
+
+    fprintf(stderr, "[PCProcess::GetTOCOffsetInfo] Offset: %llx, Mobj Database: %llx\n",mobj->parse_img()->getObject()->getTOCoffset(), mobj->dataBase());    
     if (!TOCOffset)
        return 0;
     return TOCOffset + mobj->dataBase();
