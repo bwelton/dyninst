@@ -86,6 +86,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   }
   */
   unsigned raw = insn.asInt();
+  fprintf(stderr, "[Generating Instruction] %x\n", raw);
   gen.copy(&raw, sizeof(unsigned));
 }
 
@@ -111,6 +112,7 @@ void insnCodeGen::generateBranch(codeGen &gen, long disp, bool link)
 	bperr( "Attempted to make a branch of offset 0x%lx\n", disp);
 	assert(0);
     }
+
 
     instruction insn;
     IFORM_OP_SET(insn, Bop);
