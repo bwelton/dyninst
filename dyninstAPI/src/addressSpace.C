@@ -763,7 +763,7 @@ func_instance *AddressSpace::findOnlyOneFunction(const string &name,
 
    if (allFuncs.size() > 1) 
    {
-      //cerr << "Warning: multiple matches for " << name << ", returning first" << endl;
+      std::cerr << "Warning: multiple matches for " << name << ", returning first" << std::endl;
    }
 
    return allFuncs[0];
