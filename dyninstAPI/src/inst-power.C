@@ -1308,6 +1308,7 @@ Register EmitterPOWER::emitCall(opCode ocode,
                                 func_instance *callee) {
     bool inInstrumentation = true;
 
+    //fprintf(stderr, "[EmitterPOWER::emitCall] making call to: %llx\n", callee-> );
     // If inInstrumentation is true we're in instrumentation;
     // if false we're in function call replacement
     if (ocode == funcJumpOp)

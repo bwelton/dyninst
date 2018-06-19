@@ -81,6 +81,7 @@ Address PCProcess::getTOCoffsetInfo(func_instance *func) {
 
     mapped_object *mobj = func->obj();
 
+    fprintf(stderr, "[PCProcess::GetTOCOffsetInfo] Offset: %llx, Mobj Database: %llx\n",mobj->parse_img()->getObject()->getTOCoffset(), mobj->dataBase());
     return mobj->parse_img()->getObject()->getTOCoffset() + mobj->dataBase();
 }
 
