@@ -86,7 +86,6 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   }
   */
   unsigned raw = insn.asInt();
-  fprintf(stderr, "[Generating Instruction] %x\n", raw);
   gen.copy(&raw, sizeof(unsigned));
 }
 
