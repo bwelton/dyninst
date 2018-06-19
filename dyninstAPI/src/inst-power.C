@@ -3410,7 +3410,7 @@ bool EmitterPOWER::emitCallInstruction(codeGen &gen, func_instance *callee, bool
     else {
         inst_printf("[EmitterPOWER::EmitCallInstruction] Generating Call, curAddress: %lx, calleeAddr: %lx\n",
                      gen.currAddr(), callee->addr());
-        //emitVload(loadConstOp, callee->addr(), 12, 12, gen, false);
+        emitVload(loadConstOp, callee->addr(), 12, 12, gen, false);
         insnCodeGen::generateCall(gen, gen.currAddr(), callee->addr());
         inst_printf("Generated short call from 0x%lx to 0x%lx\n",
                 gen.currAddr(), callee->addr());

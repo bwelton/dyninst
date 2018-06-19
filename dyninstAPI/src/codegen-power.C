@@ -94,16 +94,16 @@ codeBuf_t *insnCodeGen::ptrAndInc(codeGen &gen) {
 #endif
 
 void insnCodeGen::generate(codeGen &gen, instruction&insn) {
-  void *buffer[50];
-  char **strings;
-  int nptrs;
-  nptrs = backtrace(buffer, 50);
-  strings = backtrace_symbols(buffer, nptrs);
-  std::stringstream ss;
-  if (strings != NULL) {
-    for (int i = 0; i < nptrs; i++) 
-      ss << strings[i] << std::endl;
-  }
+  // void *buffer[50];
+  // char **strings;
+  // int nptrs;
+  // nptrs = backtrace(buffer, 50);
+  // strings = backtrace_symbols(buffer, nptrs);
+  // std::stringstream ss;
+  // if (strings != NULL) {
+  //   for (int i = 0; i < nptrs; i++) 
+  //     ss << strings[i] << std::endl;
+  // }
 
   /*
   AddressSpace *as = gen.addrSpace();
@@ -128,9 +128,9 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
     raw = insn.asInt();
   }
   */
-  if (_global_stack_track.get() == NULL)
-    _global_stack_track.reset(new TrackStacktraces());
-  _global_stack_track->Insert(ss.str());
+  // if (_global_stack_track.get() == NULL)
+  //   _global_stack_track.reset(new TrackStacktraces());
+  // _global_stack_track->Insert(ss.str());
   unsigned raw = insn.asInt();
   gen.copy(&raw, sizeof(unsigned));
 }
