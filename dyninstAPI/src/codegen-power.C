@@ -51,6 +51,7 @@
 #endif
 
 class TrackStacktraces {
+public:
   std::ofstream _out;
   std::set<std::string> _stacks;
   TrackStacktraces() {
