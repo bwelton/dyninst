@@ -1019,10 +1019,15 @@ BPatch_object *BPatch_process::loadLibrary(const char *libname, bool)
        **/
       BPatch_Vector<BPatch_function *> bpfv;
       BPatch_Vector<BPatch_function*> all_functions_in_binary;
+      FILE * allFuncFile = fopen("allfuncfile.txt","w");
       image->getProcedures(all_functions_in_binary, true);
       for (auto ifn : all_functions_in_binary) {
-         fprintf(stderr, "[AllFuncDump] %s %llx %llx\n", ifn->getModule()->getObject()->pathName().c_str(),  ((uint64_t )ifn->getBaseAddr()) - ((uint64_t) ifn->getModule()->getBaseAddr()), ((uint64_t )ifn->getBaseAddr()));
+         std::string name = ifn->getName();
+         if (name.size() == 0) 
+            name = std::string("Unknown");
+         fprintf(allFuncFile, "[AllFuncDump] %s %s %llx %llx\n", ifn->getModule()->getObject()->pathName().c_str(), name.c_str(), ((uint64_t )ifn->getBaseAddr()) - ((uint64_t) ifn->getModule()->getBaseAddr()), ((uint64_t )ifn->getBaseAddr()));
       }
+      fclose(allfuncfile);
       image->findFunction("DYNINSTloadLibrary", bpfv);
       if (!bpfv.size()) {
          cerr << __FILE__ << ":" << __LINE__ << ": FATAL:  Cannot find Internal"
