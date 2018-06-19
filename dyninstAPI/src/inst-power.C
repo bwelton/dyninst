@@ -702,7 +702,6 @@ void resetBR(AddressSpace  *p,    //Process to write instruction into
 	     Address   loc)  //Address in process to write into
 {
     instruction i = BRraw;
-/
     if (!p->writeDataSpace((void *)loc, instruction::size(), i.ptr()))
         fprintf(stderr, "%s[%d]:  writeDataSpace failed\n", FILE__, __LINE__);
 }
