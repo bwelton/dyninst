@@ -2118,7 +2118,18 @@ bool AstCallNode::generateCode_phase2(codeGen &gen, bool noCost,
     if (!use_func && !func_addr_) {
         // We purposefully don't cache the func_instance object; the AST nodes
         // are process independent, and functions kinda are.
-        use_func = gen.addrSpace()->findOnlyOneFunction(func_name_.c_str());
+
+        // Always choose the underlying function, NOT the PLT for Power 8. 
+        // We need to fix PLT function calls from instrimentation (to do).
+        std::vector<func_instance *> foundFuncs;
+        assert(gen.addrSpace()->findFuncsByAll(func_name_, foundFuncs, std::string("")) == true);
+        use_func = NULL;
+        for (auto i : foundFuncs) {
+           use_func = i;
+           fprintf(stderr, "[AstCallNode::generateCode_phase2] Function Name: %s\n", i->name().c_str());
+        }
+
+        // use_func = gen.addrSpace()->findOnlyOneFunction(func_name_.c_str());
         if (!use_func) {
             fprintf(stderr, "ERROR: failed to find function %s, unable to create call\n",
                     func_name_.c_str());
