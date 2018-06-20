@@ -2114,6 +2114,7 @@ void mapped_object::setCallee(const block_instance *b, func_instance *f) {
 bool mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, Address newAddr) {
    // Let's play relocation games...
    vector<SymtabAPI::relocationEntry> fbt;
+   fprintf(stderr, "[mapped_object::replacePLTStub] Searching for PLT Symbol for - %s\n", sym->getMangledName());
    bool ok = parse_img()->getObject()->getFuncBindingTable(fbt);
    if(!ok) return false;
    
@@ -2137,6 +2138,7 @@ bool mapped_object::replacePLTStub(SymtabAPI::Symbol *sym, func_instance *orig, 
       if (!ok) return false;
       for (auto i : generalRelocs) {
         if (i.name() == sym->getMangledName()){
+
           proc()->bindPLTEntry(i, codeBase(), orig, newAddr);
           found = true;
         }
