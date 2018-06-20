@@ -2381,10 +2381,14 @@ bool PCProcess::hasBeenBound(const SymtabAPI::relocationEntry &entry,
 
 #endif
 
-bool PCProcess::bindPLTEntry(const SymtabAPI::relocationEntry &, Address, 
-                           func_instance *, Address) {
-   assert(0 && "TODO!");
-   return false;
+bool PCProcess::bindPLTEntry(const SymtabAPI::relocationEntry &entry, Address base_addr, 
+                           func_instance * origFunc, Address target_addr) {
+   fprintf(stderr, "[PCProcess::bindPLTEntry] Relocation Entry location target: %llx, relocation: %llx - base_addr: %llx, original_function: %llx, new_target: %llx\n", entry.target_addr(), entry.rel_addr(), base_addr, original_function->getPtrAddress(), target_addr);
+   Address got_entry = entry.rel_addr() + base_addr;
+   return writeDataSpace((void *)got_entry, sizeof(Address), &target_addr);
+
+   //assert(0 && "TODO!");
+   // return false;
 }
 void emitLoadPreviousStackFrameRegister(Address register_num, 
                                         Register dest,

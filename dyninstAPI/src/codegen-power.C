@@ -788,7 +788,8 @@ bool insnCodeGen::generate(codeGen & /*gen*/,
     return true;
 #endif
 }
-                           
+                // {insn_ = {byte = {0xa6, 0x3, 0x8, 0x7c}, raw = 0x7c0803a6}}    
+                // {insn_ = {byte = {0xa6, 0x3, 0x8, 0x7c}, raw = 0x7c0803a6}}       
 bool insnCodeGen::generateMem(codeGen &,
                               instruction&,
                               Address, 
