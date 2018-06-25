@@ -174,7 +174,7 @@ void insnCodeGen::generateBranch(codeGen &gen, long disp, bool link)
 void insnCodeGen::generateBranch(codeGen &gen, Address from, Address to, bool link) {
 
     long disp = (to - from);
-    fprintf(stderr, "[insnCodeGen::generateBranch] Generating branch from %p to %p\n", from, to);
+//    fprintf(stderr, "[insnCodeGen::generateBranch] Generating branch from %p to %p\n", from, to);
     if (from == 0x10000750 || from == 0x10000758) {
       fprintf(stderr, "Stop here\n");
     }

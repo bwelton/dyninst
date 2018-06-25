@@ -2126,7 +2126,7 @@ bool AstCallNode::generateCode_phase2(codeGen &gen, bool noCost,
         use_func = NULL;
         for (auto i : foundFuncs) {
            use_func = i;
-           fprintf(stderr, "[AstCallNode::generateCode_phase2] Function Name: %s\n", i->name().c_str());
+//           fprintf(stderr, "[AstCallNode::generateCode_phase2] Function Name: %s\n", i->name().c_str());
         }
 
         // use_func = gen.addrSpace()->findOnlyOneFunction(func_name_.c_str());

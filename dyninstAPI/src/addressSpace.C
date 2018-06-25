@@ -135,7 +135,7 @@ Address AddressSpace::getTOCoffsetInfo(func_instance *func) {
   if (getAddressWidth() == 4 && !toc32) return 0;
 
   Offset baseTOC = func->obj()->parse_img()->getObject()->getTOCoffset(func->function()->addr());
-  fprintf(stderr, "[AddressSpace::getTOCoffset] Base TOC: %llx, Database: %llx\n", baseTOC, func->obj()->dataBase());
+  //fprintf(stderr, "[AddressSpace::getTOCoffset] Base TOC: %llx, Database: %llx\n", baseTOC, func->obj()->dataBase());
   return baseTOC + func->obj()->dataBase();
 }
 
