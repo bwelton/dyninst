@@ -742,8 +742,10 @@ void PCProcess::setMainFunction() {
 
     for (unsigned i = 0; i < NUMBER_OF_MAIN_POSSIBILITIES; i++) {
         main_function_ = findOnlyOneFunction(main_function_names[i]);
-        if (main_function_)
+        if (main_function_){
             std::cerr << "[PCProcess::setMainFunction] Main function found - " << main_function_names[i] << std::endl;
+            break;
+        }
         // if (main_function_) {
         //    break;
         // }
