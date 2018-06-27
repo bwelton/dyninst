@@ -757,19 +757,27 @@ func_instance *AddressSpace::findOnlyOneFunction(const string &name,
    assert(mapped_objects.size());
 
    pdvector<func_instance *> allFuncs;
+   func_instance * ret;
 
    if (!findFuncsByAll(name.c_str(), allFuncs, lib.c_str()))
       return NULL;
 
 
-
+   ret = allFuncs[0];
+   uint64_t largest = allFuncs[0]->get_size();
    if (allFuncs.size() > 1) 
    {
       std::cerr << "Warning: multiple matches for " << name << ", returning first" << std::endl;
-      assert(allFuncs.size() == 1);
+      for (auto i : allFuncs) {
+          std::cerr << "Function with size of - " << i->get_size() << std::endl;
+          if (i->get_size() > largest){
+            ret = i;  
+            largest = i->get_size();
+          }
+      }
    }
 
-   return allFuncs[0];
+   return ret;
 }
 
 /////////////////////////////////////////
