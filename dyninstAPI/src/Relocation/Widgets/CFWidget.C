@@ -234,7 +234,9 @@ bool CFWidget::generate(const codeGen &templ,
          // the FUNLINK) or a conditional branch.
          if (isCall_) {
             // Well, that kinda explains things
-            assert(!isConditional_);
+          if(isConditional_)
+            return false;
+//            assert(!isConditional_);
             relocation_cerr << "  ... generating call" << endl;
             if (!generateCall(buffer,
                               destMap_[Taken],
