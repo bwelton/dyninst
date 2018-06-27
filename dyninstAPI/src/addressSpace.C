@@ -764,15 +764,15 @@ func_instance *AddressSpace::findOnlyOneFunction(const string &name,
 
 
    ret = allFuncs[0];
-   uint64_t largest = allFuncs[0]->get_size();
+   uint64_t largest = allFuncs[0]->footprint();
    if (allFuncs.size() > 1) 
    {
       std::cerr << "Warning: multiple matches for " << name << ", returning first" << std::endl;
       for (auto i : allFuncs) {
-          std::cerr << "Function with size of - " << i->get_size() << std::endl;
-          if (i->get_size() > largest){
+          std::cerr << "Function with size of - " << i->footprint() << std::endl;
+          if (i->footprint() > largest){
             ret = i;  
-            largest = i->get_size();
+            largest = i->footprint();
           }
       }
    }
