@@ -222,10 +222,65 @@ void insnCodeGen::generateInterFunctionBranch(codeGen &gen,
     insnCodeGen::generate(gen,btctr);
 }
 
+void GenerateSavesBaseTrampStyle(codeGen &gen) {
+  // Save everything, then all things are scratch registers...
+
+    unsigned int width = gen.width();
+
+    int gpr_off, fpr_off;
+    gpr_off = TRAMP_GPR_OFFSET(width);
+    fpr_off = TRAMP_FPR_OFFSET(width);
+
+    // Make a stack frame.
+    pushStack(gen);
+
+    // Save GPRs
+    saveGPRegisters(gen, gen.rs(), gpr_off);
+
+    if(BPatch::bpatch->isSaveFPROn() ||  // Save FPRs
+        BPatch::bpatch->isForceSaveFPROn() ) 
+    saveFPRegisters(gen, gen.rs(), fpr_off);
+
+    // Save LR            
+    saveLR(gen, REG_SCRATCH /* register to use */, TRAMP_SPR_OFFSET(width) + STK_LR);
+
+    saveSPRegisters(gen, gen.rs(), TRAMP_SPR_OFFSET(width), true); // FIXME get liveness fixed
+}
+
+
+void GenerateRestoresBaseTrampStyle(codeGen &gen) {
+    unsigned int width = gen.width();
+
+    int gpr_off, fpr_off;
+    gpr_off = TRAMP_GPR_OFFSET(width);
+    fpr_off = TRAMP_FPR_OFFSET(width);
+
+    // Restore possible SPR saves
+    restoreSPRegisters(gen, gen.rs(), TRAMP_SPR_OFFSET(width), false);
+
+    // LR
+    restoreLR(gen, REG_SCRATCH, TRAMP_SPR_OFFSET(width) + STK_LR);
+
+    if (BPatch::bpatch->isSaveFPROn() || // FPRs
+        BPatch::bpatch->isForceSaveFPROn() ) 
+  restoreFPRegisters(gen, gen.rs(), fpr_off);
+
+    // GPRs
+    restoreGPRegisters(gen, gen.rs(), gpr_off);
+
+    /*
+    // Multithread GPR -- always save
+    restoreRegister(gen, REG_MT_POS, TRAMP_GPR_OFFSET);
+    */
+
+    popStack(gen);
+}
+
 void insnCodeGen::generateLongBranch(codeGen &gen, 
                                      Address from, 
                                      Address to, 
                                      bool isCall) {
+  bool everythingSaved = false;
   //fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
     // First, see if we can cheap out
     long disp = (to - from);
@@ -254,10 +309,17 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
 
 
     if (scratch == REG_NULL) { 
+        // Just save and restore everything, this is bad but its likely safe and can be revisted later.
+        GenerateSavesBaseTrampStyle(gen);
+        everythingSaved = true;
+        scratch = REG_R12;
+
         // On Linux we save under the stack and hope it doesn't
         // cause problems.
-        fprintf(stderr, " %s[%d] No registers generateBranchViaTrap \n", FILE__, __LINE__);
-        return generateBranchViaTrap(gen, from, to, isCall);
+        
+        // original
+        //fprintf(stderr, " %s[%d] No registers generateBranchViaTrap \n", FILE__, __LINE__);
+        //return generateBranchViaTrap(gen, from, to, isCall);
     }
     
     // Load the destination into our scratch register
@@ -266,7 +328,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     // Find out whether the LR or CTR is "dead"...
     bitArray liveRegs = point->liveRegisters();
     unsigned branchRegister = 0;
-    if (liveRegs[registerSpace::lr] == false) {
+    if (liveRegs[registerSpace::lr] == false || everythingSaved == true) {
         branchRegister = registerSpace::lr;
     }
     else {
@@ -314,6 +376,10 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     }
     XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
     insnCodeGen::generate(gen,branchToBr);
+
+    // restore the world
+    if(everythingSaved)
+      GenerateRestoresBaseTrampStyle(gen);
 }
 
 void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, bool isCall) {
@@ -329,9 +395,7 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
     if (isCall) {
       // Screw using a trap, just emit a call and save/restore all registers (painful but whatever).
       //emitCall()
-      fprintf(stderr, "%s\n", "insnCodeGen is inserting a trapmapping for a call instruction (this may fail....)");
-      gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
-      insnCodeGen::generateTrap(gen);        
+      assert(isCall == false);       
       //assert(shouldAssertIfInLongBranch != true);
       // failedLongBranchLocal = true;
     } else {    
