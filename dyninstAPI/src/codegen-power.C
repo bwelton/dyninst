@@ -321,7 +321,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     
     // Load the destination into our scratch register
     insnCodeGen::loadImmIntoReg(gen, scratch, to);
-    branchRegister = registerSpace::lr;
+    unsigned branchRegister = registerSpace::lr;
     // Find out whether the LR or CTR is "dead"...
     // bitArray liveRegs = point->liveRegisters();
     // unsigned branchRegister = 0;
