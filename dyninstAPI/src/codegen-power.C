@@ -50,6 +50,8 @@
 #include "common/src/wtxKludges.h"
 #endif
 
+bool shouldAssertIfInLongBranch = true;
+bool failedLongBranchLocal = false;
 class TrackStacktraces {
 public:
   std::ofstream _out;
@@ -175,9 +177,9 @@ void insnCodeGen::generateBranch(codeGen &gen, Address from, Address to, bool li
 
     long disp = (to - from);
 //    fprintf(stderr, "[insnCodeGen::generateBranch] Generating branch from %p to %p\n", from, to);
-    if (from == 0x10000750 || from == 0x10000758) {
-      fprintf(stderr, "Stop here\n");
-    }
+    // if (from == 0x10000750 || from == 0x10000758) {
+    //   fprintf(stderr, "Stop here\n");
+    // }
     if (ABS(disp) > MAX_BRANCH) {
         return generateLongBranch(gen, from, to, link);
     }
@@ -224,7 +226,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
                                      Address from, 
                                      Address to, 
                                      bool isCall) {
-  fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
+  //fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
     // First, see if we can cheap out
     long disp = (to - from);
     if (ABS(disp) <= MAX_BRANCH) {
@@ -323,21 +325,25 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
         return generateBranch(gen, disp, isCall);
     }
     
-    assert (isCall == false); // Can't do this yet
-    
-    if (gen.addrSpace()) {
-        // Too far to branch.  Use trap-based instrumentation.
-        gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
-        insnCodeGen::generateTrap(gen);        
-    } else {
-        // Too far to branch and no proc to register trap.
-        fprintf(stderr, "ABS OFF: 0x%lx, MAX: 0x%lx\n",
-                ABS(disp), (unsigned long) MAX_BRANCH);
-        bperr( "Error: attempted a branch of 0x%lx\n", disp);
-        logLine("a branch too far\n");
-        showErrorCallback(52, "Internal error: branch too far");
-        bperr( "Attempted to make a branch of offset 0x%lx\n", disp);
-        assert(0);
+    //assert (isCall == false); // Can't do this yet
+    if (isCall) {
+      assert(shouldAssertIfInLongBranch != true);
+      failedLongBranchLocal = true;
+    } else {    
+      if (gen.addrSpace()) {
+          // Too far to branch.  Use trap-based instrumentation.
+          gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
+          insnCodeGen::generateTrap(gen);        
+      } else {
+          // Too far to branch and no proc to register trap.
+          fprintf(stderr, "ABS OFF: 0x%lx, MAX: 0x%lx\n",
+                  ABS(disp), (unsigned long) MAX_BRANCH);
+          bperr( "Error: attempted a branch of 0x%lx\n", disp);
+          logLine("a branch too far\n");
+          showErrorCallback(52, "Internal error: branch too far");
+          bperr( "Attempted to make a branch of offset 0x%lx\n", disp);
+          assert(0);
+      }
     }
 }
 
@@ -832,11 +838,18 @@ void insnCodeGen::generateMoveToCR(codeGen &gen, Register rs) {
 bool insnCodeGen::modifyJump(Address target,
 			     NS_power::instruction &insn,
 			     codeGen &gen) {
+  failedLongBranchLocal = false;
+  shouldAssertIfInLongBranch = false;
   generateBranch(gen,
 		 gen.currAddr(),
 		 target,
 		 IFORM_LK(insn));
-    return true;
+  if (failedLongBranchLocal == true){
+    failedLongBranchLocal = false;
+    shouldAssertIfInLongBranch = true;
+    return false;
+  }
+  return true;
 }
 
 bool insnCodeGen::modifyJcc(Address target,
