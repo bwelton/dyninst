@@ -237,8 +237,7 @@ void GenerateSavesBaseTrampStyle(codeGen &gen) {
     // Save GPRs
     saveGPRegisters(gen, gen.rs(), gpr_off);
 
-    if(BPatch::bpatch->isSaveFPROn() ||  // Save FPRs
-        BPatch::bpatch->isForceSaveFPROn() ) 
+
     saveFPRegisters(gen, gen.rs(), fpr_off);
 
     // Save LR            
@@ -261,8 +260,6 @@ void GenerateRestoresBaseTrampStyle(codeGen &gen) {
     // LR
     restoreLR(gen, REG_SCRATCH, TRAMP_SPR_OFFSET(width) + STK_LR);
 
-    if (BPatch::bpatch->isSaveFPROn() || // FPRs
-        BPatch::bpatch->isForceSaveFPROn() ) 
   restoreFPRegisters(gen, gen.rs(), fpr_off);
 
     // GPRs
@@ -312,7 +309,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         // Just save and restore everything, this is bad but its likely safe and can be revisted later.
         GenerateSavesBaseTrampStyle(gen);
         everythingSaved = true;
-        scratch = REG_R12;
+        scratch = registerSpace::r12;
 
         // On Linux we save under the stack and hope it doesn't
         // cause problems.
