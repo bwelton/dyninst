@@ -327,8 +327,13 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
     
     //assert (isCall == false); // Can't do this yet
     if (isCall) {
-      assert(shouldAssertIfInLongBranch != true);
-      failedLongBranchLocal = true;
+      // Screw using a trap, just emit a call and save/restore all registers (painful but whatever).
+      //emitCall()
+      fprintf(stderr, "%s\n", "insnCodeGen is inserting a trapmapping for a call instruction (this may fail....)");
+      gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
+      insnCodeGen::generateTrap(gen);        
+      //assert(shouldAssertIfInLongBranch != true);
+      // failedLongBranchLocal = true;
     } else {    
       if (gen.addrSpace()) {
           // Too far to branch.  Use trap-based instrumentation.
