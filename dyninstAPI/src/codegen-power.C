@@ -321,20 +321,20 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     
     // Load the destination into our scratch register
     insnCodeGen::loadImmIntoReg(gen, scratch, to);
-    
+    branchRegister = registerSpace::lr;
     // Find out whether the LR or CTR is "dead"...
-    bitArray liveRegs = point->liveRegisters();
-    unsigned branchRegister = 0;
-    if (liveRegs[registerSpace::lr] == false || everythingSaved == true) {
-        branchRegister = registerSpace::lr;
-    }
-    else {
-        // live LR means we need to save/restore somewhere
-        if(isCall) return generateBranchViaTrap(gen, from, to, isCall);
-        if (liveRegs[registerSpace::ctr] == false) {
-            branchRegister = registerSpace::ctr;
-        }
-    }
+    // bitArray liveRegs = point->liveRegisters();
+    // unsigned branchRegister = 0;
+    // if (liveRegs[registerSpace::lr] == false || everythingSaved == true) {
+    //     branchRegister = registerSpace::lr;
+    // }
+    // else {
+    //     // live LR means we need to save/restore somewhere
+    //     if(isCall) return generateBranchViaTrap(gen, from, to, isCall);
+    //     if (liveRegs[registerSpace::ctr] == false) {
+    //         branchRegister = registerSpace::ctr;
+    //     }
+    // }
 
     if (!branchRegister) {
         fprintf(stderr, " %s[%d] No branch register generateBranchViaTrap \n", FILE__, __LINE__);
