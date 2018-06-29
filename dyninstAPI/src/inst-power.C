@@ -1296,6 +1296,8 @@ Register EmitterPOWER::emitCallReplacement(opCode ocode,
     return REG_NULL;
 }
 
+
+
 // There are four "axes" going on here:
 // 32 bit vs 64 bit  
 // Instrumentation vs function call replacement

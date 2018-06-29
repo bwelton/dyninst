@@ -1499,6 +1499,7 @@ func_instance *AddressSpace::findOneFuncByAddr(Address addr) {
    // Arbitrarily pick one...
    Address last = 0;
    func_instance *ret = NULL;
+   fprintf(stderr, "[AddressSpace::findOneFuncByAddr] Found multiple functions at address %llx\n", (uint64_t) addr);
    for (std::set<func_instance *>::iterator iter = funcs.begin();
         iter != funcs.end(); ++iter) {
       if (ret == NULL ||

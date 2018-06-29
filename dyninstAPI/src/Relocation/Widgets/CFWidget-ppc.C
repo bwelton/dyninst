@@ -139,13 +139,17 @@ bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
          }
          case CFPatch::Call: {
             relocation_cerr << "\t\t\t Generating CFPatch::Call from " 
-                            << hex << gen.currAddr() << " to " << buf->predictedAddr(targetLabel) << dec << endl;            
-            if (!insnCodeGen::modifyCall(buf->predictedAddr(targetLabel), *ugly_insn, gen)) {
-               relocation_cerr << "Modified Call failed: Trying to generate call instead..." << endl;
-               insnCodeGen::generateCall(gen, gen.currAddr(), buf->predictedAddr(targetLabel));
-	             //relocation_cerr << "modifyCall failed, ret false" << endl;
-               //return false;
-            }
+                            << hex << gen.currAddr() << " to " << buf->predictedAddr(targetLabel) << dec << endl;     
+            // Find the callee function
+            func_instance * callee =  gen.addrSpace()->findOneFuncByAddr(buf->predictedAddr(targetLabel));
+            assert(callee != NULL);
+            gen.emitter()->emitCallReplacement(funcJumpOp, gen,false, callee);
+            // if (!insnCodeGen::modifyCall(buf->predictedAddr(targetLabel), *ugly_insn, gen)) {
+            //    relocation_cerr << "Modified Call failed: Trying to generate call instead..." << endl;
+            //    insnCodeGen::generateCall(gen, gen.currAddr(), buf->predictedAddr(targetLabel));
+	           //   //relocation_cerr << "modifyCall failed, ret false" << endl;
+            //    //return false;
+            // }
             return true;
          }
          case CFPatch::Data: {
