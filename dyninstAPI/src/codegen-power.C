@@ -310,7 +310,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         GenerateSavesBaseTrampStyle(gen);
         everythingSaved = true;
         scratch = registerSpace::r12;
-
+        assert(everythingSaved != true);
         // On Linux we save under the stack and hope it doesn't
         // cause problems.
         
