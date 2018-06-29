@@ -141,9 +141,9 @@ bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
             relocation_cerr << "\t\t\t Generating CFPatch::Call from " 
                             << hex << gen.currAddr() << " to " << buf->predictedAddr(targetLabel) << dec << endl;     
             // Find the callee function
-            func_instance * callee =  gen.addrSpace()->findOneFuncByAddr(buf->predictedAddr(targetLabel));
-            assert(callee != NULL);
-            ((EmitterPOWER *)gen.emitter())->emitCallReplacement(funcJumpOp, gen,false, callee);
+            // func_instance * callee =  gen.addrSpace()->findOneFuncByAddr(buf->predictedAddr(targetLabel));
+            // assert(callee != NULL);
+            ((EmitterPOWER *)gen.emitter())->emitCallWithSaves(gen, buf->predictedAddr(targetLabel), false, false, false);
             // if (!insnCodeGen::modifyCall(buf->predictedAddr(targetLabel), *ugly_insn, gen)) {
             //    relocation_cerr << "Modified Call failed: Trying to generate call instead..." << endl;
             //    insnCodeGen::generateCall(gen, gen.currAddr(), buf->predictedAddr(targetLabel));

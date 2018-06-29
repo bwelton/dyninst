@@ -1243,6 +1243,25 @@ Register emitFuncCall(opCode op,
     return gen.emitter()->emitCall(op, gen, operands, noCost, callee);
 }
 
+void EmitterPOWER::emitCallWithSaves(codeGen &gen, Address dest, bool saveToc, bool saveLR, bool saveR12) {
+    // Save the values onto the stack.... (might be needed).
+    if (saveToc) {}
+    if (saveLR) {}
+    if (saveR12) {}
+
+    emitVload(loadConstOp, dest, 0, 0, gen, false);
+    insnCodeGen::generateMoveToLR(gen, scratchReg);
+    emitVload(loadConstOp, dest, 12, 12, gen, false);
+    instruction brl(BRLraw);
+    insnCodeGen::generate(gen,brl);
+    inst_printf("Generated BRL\n");
+    // Retore the original
+    if (saveToc) {}
+    if (saveLR) {}
+    if (saveR12) {}
+}
+
+
 Register EmitterPOWER::emitCallReplacement(opCode ocode,
                                            codeGen &gen,
                                            bool /* noCost */,
@@ -1297,7 +1316,58 @@ Register EmitterPOWER::emitCallReplacement(opCode ocode,
 }
 
 
+// Register EmitterPOWER::emitCallReplacementLR(opCode ocode,
+//                                            codeGen &gen,
+//                                            bool /* noCost */,
+//                                            func_instance *callee) {
+//     // This takes care of the special case where we are replacing an existing
+//     // linking branch instruction.
+//     //
+//     // This code makes two crucial assumptions:
+//     // 1) LR is free: Linking branch instructions place pre-branch IP in LR.
+//     // 2) TOC (r2) is free: r2 should hold TOC of destination.  So use it
+//     //    as scratch, and set it to destination module's TOC upon return.
+//     //    This works for both the inter and intra module call cases.
+//     // In the 32-bit case where we can't use r2, stomp on r0 and pray...
 
+//     //  Sanity check for opcode.
+//     assert(ocode == funcJumpOp);
+
+//     Register freeReg = 0;
+//     instruction mtlr(MTLR0raw);
+
+//     // 64-bit Mutatees
+//     if (gen.addrSpace()->proc()->getAddressWidth() == 8) {
+//         freeReg = 2;
+//         mtlr = instruction(MTLR2raw);
+//     }
+
+//     // Load register with address.
+//     emitVload(loadConstOp, callee->addr(), freeReg, freeReg, gen, false);
+
+//     // Move to link register.
+//     insnCodeGen::generate(gen,mtlr);
+
+//     Address toc_new = gen.addrSpace()->proc()->getTOCoffsetInfo(callee);
+//     if (toc_new) {
+//         // Set up the new TOC value
+//         emitVload(loadConstOp, toc_new, freeReg, freeReg, gen, false);
+//     }
+
+//     // blr - branch through the link reg.
+//     instruction blr(BRraw);
+//     insnCodeGen::generate(gen,blr);
+
+//     func_instance *caller = gen.point()->func();
+//     Address toc_orig = gen.addrSpace()->proc()->getTOCoffsetInfo(caller);
+//     if (toc_new) {
+//         // Restore the original TOC value.
+//         emitVload(loadConstOp, toc_orig, freeReg, freeReg, gen, false);
+//     }
+
+//     // What to return here?
+//     return REG_NULL;
+// }
 // There are four "axes" going on here:
 // 32 bit vs 64 bit  
 // Instrumentation vs function call replacement
