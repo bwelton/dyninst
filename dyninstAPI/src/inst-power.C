@@ -1250,7 +1250,7 @@ void EmitterPOWER::emitCallWithSaves(codeGen &gen, Address dest, bool saveToc, b
     if (saveR12) {}
 
     emitVload(loadConstOp, dest, 0, 0, gen, false);
-    insnCodeGen::generateMoveToLR(gen, scratchReg);
+    insnCodeGen::generateMoveToLR(gen, 0);
     emitVload(loadConstOp, dest, 12, 12, gen, false);
     instruction brl(BRLraw);
     insnCodeGen::generate(gen,brl);
