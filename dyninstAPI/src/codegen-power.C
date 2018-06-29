@@ -307,10 +307,10 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
 
     if (scratch == REG_NULL) { 
         // Just save and restore everything, this is bad but its likely safe and can be revisted later.
-        GenerateSavesBaseTrampStyle(gen);
-        everythingSaved = true;
+        // GenerateSavesBaseTrampStyle(gen);
+        // everythingSaved = true;
         scratch = registerSpace::r12;
-        assert(everythingSaved != true);
+        // assert(everythingSaved != true)
         // On Linux we save under the stack and hope it doesn't
         // cause problems.
         
