@@ -113,6 +113,7 @@ class EmitterPOWER : public Emitter {
     virtual bool emitAdjustStackPointer(int, codeGen &) { assert(0); return true;}
     
     virtual bool clobberAllFuncCall(registerSpace *rs,func_instance *callee);
+
     virtual Register emitCallReplacement(opCode, codeGen &, bool,
                                          func_instance *);
  protected:
