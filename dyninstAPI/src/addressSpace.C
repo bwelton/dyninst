@@ -1707,7 +1707,9 @@ bool AddressSpace::relocate() {
   for (std::map<mapped_object *, FuncSet>::iterator iter = modifiedFunctions_.begin();
        iter != modifiedFunctions_.end(); ++iter) {
      FuncSet &modFuncs = iter->second;
-
+   for (auto myFuncAddr : modFuncs){
+      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->getPtrAddress() << std::endl;
+    }
      bool repeat = false;
 
      do { // add overlapping functions in a fixpoint calculation
@@ -1753,7 +1755,7 @@ bool AddressSpace::relocate() {
   return ret;
 }
 
-// iter is some sort of functions
+// This item is a set of functions within the module which have been modified.
 bool AddressSpace::relocateInt(FuncSet::const_iterator begin, FuncSet::const_iterator end, Address nearTo) {
 
   if (begin == end) {
@@ -1766,6 +1768,7 @@ bool AddressSpace::relocateInt(FuncSet::const_iterator begin, FuncSet::const_ite
 
   relocatedCode_.push_back(new CodeTracker());
   CodeMover::Ptr cm = CodeMover::create(relocatedCode_.back());
+  // Creates the relocation blocks
   if (!cm->addFunctions(begin, end)) return false;
 
   SpringboardBuilder::Ptr spb = SpringboardBuilder::createFunc(begin, end, this);
