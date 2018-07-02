@@ -134,6 +134,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   //   _global_stack_track.reset(new TrackStacktraces());
   // _global_stack_track->Insert(ss.str());
   unsigned raw = insn.asInt();
+  fprintf(stderr, "Raw Written value %u\n", raw);
   gen.copy(&raw, sizeof(unsigned));
 }
 
