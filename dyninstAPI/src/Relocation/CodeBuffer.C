@@ -105,6 +105,9 @@ bool CodeBuffer::BufferElement::generate(CodeBuffer *buf,
    codeBufIndex_t start = gen.getIndex();
    addr_ = gen.currAddr();
    std::cerr << "Proposed current address of the function: " << std::hex << buf->ptr() << std::dec << std::endl;
+   std::cerr << "Gen curr address: " << std::hex << gen.currAddr() << std::dec << std::endl;
+   std::cerr << "Gen start address: " << std::hex << gen.currAddr() << std::dec << std::endl;
+   std::cerr << "Label address: " << std::hex << addr_ - gen.startAddr() << std::dec << std::endl;
    // By definition, labels can only apply to the start of a
    // BufferElement. Update it now with our current address.
    buf->updateLabel(labelID_, addr_ - gen.startAddr(), regenerate);
