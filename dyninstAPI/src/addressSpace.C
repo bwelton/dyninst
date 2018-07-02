@@ -1710,6 +1710,8 @@ bool AddressSpace::relocate() {
    for (auto myFuncAddr : modFuncs){
       std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->getPtrAddress() << std::endl;
     }
+    std::cerr << "End of relocation Printing\n";
+    
      bool repeat = false;
 
      do { // add overlapping functions in a fixpoint calculation
@@ -1970,8 +1972,7 @@ Address AddressSpace::generateCode(CodeMover::Ptr cm, Address nearTo) {
         // inferiorMalloc horks if we hand it zero, so make sure it's non-zero.
         size = 1;
     }
-    baseAddr = inferiorMalloc(size, anyHeap, nearTo);
-    
+    baseAddr = inferiorMalloc(size, anyHeap, nearTo);    
     
     relocation_cerr << "   Calling CodeMover::relocate" << endl;
     if (!cm->relocate(baseAddr)) {
