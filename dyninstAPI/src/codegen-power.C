@@ -401,8 +401,20 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
     } else {    
       if (gen.addrSpace()) {
           // Too far to branch.  Use trap-based instrumentation.
-          gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
-          insnCodeGen::generateTrap(gen);        
+
+
+                  instruction insn(NOOPraw);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+        insnCodeGen::generate(gen,insn);
+          // gen.addrSpace()->trapMapping.addTrapMapping(from, to, true);
+          // insnCodeGen::generateTrap(gen);        
       } else {
           // Too far to branch and no proc to register trap.
           fprintf(stderr, "ABS OFF: 0x%lx, MAX: 0x%lx\n",
