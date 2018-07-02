@@ -109,6 +109,8 @@ bool CodeBuffer::BufferElement::generate(CodeBuffer *buf,
    std::cerr << "Gen start address: " << std::hex << gen.currAddr() << std::dec << std::endl;
    std::cerr << "Label address: " << std::hex << addr_ - gen.startAddr() << std::dec << std::endl;
    for (auto trackerEle : trackers_) {
+      if (trackerEle.second == NULL)
+         continue;
       std::cerr << "Tracker Address: " << std::hex << trackerEle.second->orig() << std::endl;
       std::cerr << "Func Instance: " << trackerEle.second->func()->name() << std::endl;
    }
