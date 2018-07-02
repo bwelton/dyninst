@@ -292,6 +292,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     instPoint *point = gen.point();
     if (!point) {
         // fprintf(stderr, " %s[%d] No point generateBranchViaTrap \n", FILE__, __LINE__);
+        fprintf(stderr, "[insnCodeGen::generateLongBranch] Building long branch from %llx to %llx and this branch call status is %d\n", from, to, isCall);
         return generateBranchViaTrap(gen, from, to, isCall);
     }
 
@@ -310,7 +311,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         // GenerateSavesBaseTrampStyle(gen);
         // everythingSaved = true;
         // do nothing, return
-        return;
+        
         // scratch = registerSpace::r12;
         // assert(everythingSaved != true)
         // On Linux we save under the stack and hope it doesn't
@@ -318,7 +319,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         
         // original
         //fprintf(stderr, " %s[%d] No registers generateBranchViaTrap \n", FILE__, __LINE__);
-        //return generateBranchViaTrap(gen, from, to, isCall);
+        return generateBranchViaTrap(gen, from, to, isCall);
     }
     
     // Load the destination into our scratch register
