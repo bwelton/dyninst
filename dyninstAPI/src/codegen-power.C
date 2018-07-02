@@ -403,6 +403,7 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
           // Too far to branch.  Use trap-based instrumentation.
 
         fprintf(stderr, "I am in where we should be generating instructions\n" );
+        
         instruction insn(NOOPraw);
         insnCodeGen::generate(gen,insn);
         insnCodeGen::generate(gen,insn);

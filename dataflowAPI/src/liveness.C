@@ -473,10 +473,10 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
       }
     }
     else{
-      base = changeIfMMX(base);
-      int index = getIndex(base);
-      assert(index >= 0);
-      ret.read[index] = true;
+      // base = changeIfMMX(base);
+      // int index = getIndex(base);
+      // assert(index >= 0);
+      // ret.read[index] = true;
     }
 //#endif
   }
@@ -514,11 +514,11 @@ ReadWriteInfo LivenessAnalyzer::calcRWSets(Instruction::Ptr curInsn, Block* blk,
       }
     }
     else{
-      base = changeIfMMX(base);
-      int index = getIndex(base);
-      assert(index >= 0);
-      ret.written[index] = true;
-      if ((cur != base && cur.size() < 4) || isMMX(base)) ret.read[index] = true;
+      // base = changeIfMMX(base);
+      // int index = getIndex(base);
+      // assert(index >= 0);
+      // ret.written[index] = true;
+      // if ((cur != base && cur.size() < 4) || isMMX(base)) ret.read[index] = true;
     }
 //#endif
   }
