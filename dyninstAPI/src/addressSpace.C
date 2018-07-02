@@ -1711,7 +1711,7 @@ bool AddressSpace::relocate() {
       std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->getPtrAddress() << std::endl;
     }
     std::cerr << "End of relocation Printing\n";
-    
+
      bool repeat = false;
 
      do { // add overlapping functions in a fixpoint calculation
@@ -1964,6 +1964,7 @@ Address AddressSpace::generateCode(CodeMover::Ptr cm, Address nearTo) {
   }
 
   while (1) {
+    std::cerr << "   Attempting to allocate " << cm->size() << "bytes" << endl;
      relocation_cerr << "   Attempting to allocate " << cm->size() << "bytes" << endl;
     unsigned size = cm->size();
     if (!size) {
