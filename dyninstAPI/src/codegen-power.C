@@ -391,7 +391,6 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
         // We shouldn't be here, since this is an internal-called-only func.
         return generateBranch(gen, disp, isCall);
     }
-    return; 
     //assert (isCall == false); // Can't do this yet
     if (isCall) {
       // Screw using a trap, just emit a call and save/restore all registers (painful but whatever).
