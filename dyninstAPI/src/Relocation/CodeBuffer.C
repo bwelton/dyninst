@@ -108,6 +108,8 @@ bool CodeBuffer::BufferElement::generate(CodeBuffer *buf,
    std::cerr << "Gen curr address: " << std::hex << gen.currAddr() << std::dec << std::endl;
    std::cerr << "Gen start address: " << std::hex << gen.currAddr() << std::dec << std::endl;
    std::cerr << "Label address: " << std::hex << addr_ - gen.startAddr() << std::dec << std::endl;
+   for (auto trackerEle : trackers_)
+      std::cerr << "Tracker Address: " << std::hex << trackerEle.second->orig() << std::endl;
    // By definition, labels can only apply to the start of a
    // BufferElement. Update it now with our current address.
    buf->updateLabel(labelID_, addr_ - gen.startAddr(), regenerate);
