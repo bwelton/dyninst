@@ -284,7 +284,7 @@ void insnCodeGen::generateMoveToSPR(codeGen &gen, Register toSPR,
   instruction moveToBr;
   moveToBr.clear();
   XFXFORM_OP_SET(moveToBr, MTSPRop);
-  XFXFORM_RT_SET(moveToBr, scratch);
+  XFXFORM_RT_SET(moveToBr, toSPR);
   XFORM_RA_SET(moveToBr, sprReg & 0x1f);
   XFORM_RB_SET(moveToBr, (sprReg >> 5) & 0x1f);
   XFXFORM_XO_SET(moveToBr, MTSPRxop); // From assembly manual
@@ -301,7 +301,7 @@ void insnCodeGen::generateMoveFromSPR(codeGen &gen,  Register toSPR,
   instruction moveToBr;
   moveToBr.clear();
   XFXFORM_OP_SET(moveToBr, MFSPRop);
-  XFXFORM_RT_SET(moveToBr, scratch);
+  XFXFORM_RT_SET(moveToBr, toSPR);
   XFORM_RA_SET(moveToBr, sprReg & 0x1f);
   XFORM_RB_SET(moveToBr, (sprReg >> 5) & 0x1f);
   XFXFORM_XO_SET(moveToBr, MFSPRxop); // From assembly manual
