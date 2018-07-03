@@ -440,7 +440,9 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     // 3. Move the register to the SPR (tar)
     // 4. Restore the original register value (if a scratch register was not found)
     // 5. build the branch instruction.
-    Register scratch = gen.rs()->getScratchRegister(gen);
+    Register scratch =REG_NULL;
+    // TODO: Fix this, this should work....
+    //= gen.rs()->getScratchRegister(gen);
     if (scratch == REG_NULL) {
         instPoint *point = gen.point();
         if (!point) {
