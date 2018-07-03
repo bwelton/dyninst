@@ -356,6 +356,7 @@ typedef unsigned codeBufIndex_t;
 #define SPR_XER	1
 #define SPR_LR	8
 #define SPR_CTR	9
+#define SPR_TAR 815
 #define SPR_MQ 0
 
 /*
@@ -589,7 +590,8 @@ typedef unsigned codeBufIndex_t;
 #define BCLRxop		16	/* branch conditional link register */
 #define BCCTRop         19      /* branch conditional count register */
 #define BCCTRxop        528     /* branch conditional count register */
-
+#define BCTARop			19 /* Branch conditional to TAR register */
+#define BCTARxop        560 /* Branch conditional to TAR register */ 
 
 // ------------- Op Codes, instruction form XO  -----------------
 /* #define XFPop        31      -- extendened fixed point ops */

@@ -1964,7 +1964,7 @@ Address AddressSpace::generateCode(CodeMover::Ptr cm, Address nearTo) {
   }
 
   while (1) {
-    std::cerr << "   Attempting to allocate " << cm->size() << "bytes" << endl;
+    //std::cerr << "   Attempting to allocate " << cm->size() << "bytes" << endl;
      relocation_cerr << "   Attempting to allocate " << cm->size() << "bytes" << endl;
     unsigned size = cm->size();
     if (!size) {

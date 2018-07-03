@@ -150,6 +150,18 @@ class insnCodeGen {
   static bool modifyData(Address target,
                          NS_power::instruction &insn, 
                          codeGen &gen);
+  void generateMoveToSPR(Register toSPR, unsigned sprReg);
+  void generateMoveFromSPR(Register toSPR,
+                                    unsigned sprReg);
+  bool generateBranchTar(Register scratch, 
+                         Address dest, 
+                         bool isCall);
+  bool generateBranchLR(Register scratch, 
+                         Address dest, 
+                         bool isCall);
+  bool generateBranchCTR(Register scratch, 
+                         Address dest, 
+                         bool isCall);
 };
 
 #endif

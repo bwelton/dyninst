@@ -77,7 +77,7 @@ bool CodeMover::addFunctions(FuncSet::const_iterator begin,
 	relocation_cerr << "\tFunction " << func->symTabName() << " is non-instrumentable, skipping" << endl;
          continue;
       }
-      relocation_cerr << "\tAdding function " << func->symTabName() << endl;
+      relocation_cerr << "\tAdding function " << func->symTabName() << endl;  
       //if (!addRelocBlocks(func->blocks().begin(), func->blocks().end(), func)) {
       if (!addRelocBlocks(func->blocks().begin(), func->blocks().end(), func)) {
          return false;

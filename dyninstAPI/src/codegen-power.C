@@ -274,113 +274,329 @@ void GenerateRestoresBaseTrampStyle(codeGen &gen) {
     popStack(gen);
 }
 
+void insnCodeGen::generateMoveToSPR(Register toSPR,
+                                    unsigned sprReg) {
+  // Check that this SPR exists
+  if (sprReg != SPR_TAR && sprReg != SPR_LR && sprReg != SPR_CTR)
+    assert("SPR Register is not valid" == 0);
+
+  // Move the register to the spr 
+  instruction moveToBr;
+  moveToBr.clear();
+  XFXFORM_OP_SET(moveToBr, MTSPRop);
+  XFXFORM_RT_SET(moveToBr, scratch);
+  XFORM_RA_SET(moveToBr, sprReg & 0x1f);
+  XFORM_RB_SET(moveToBr, (sprReg >> 5) & 0x1f);
+  XFXFORM_XO_SET(moveToBr, MTSPRxop); // From assembly manual
+  insnCodeGen::generate(gen,moveToBr); 
+}
+
+void insnCodeGen::generateMoveFromSPR(Register toSPR,
+                                    unsigned sprReg) {
+  // Check that this SPR exists
+  if (sprReg != SPR_TAR && sprReg != SPR_LR && sprReg != SPR_CTR)
+    assert("SPR Register is not valid" == 0);
+
+  // Move the register to the spr 
+  instruction moveToBr;
+  moveToBr.clear();
+  XFXFORM_OP_SET(moveToBr, MFSPRop);
+  XFXFORM_RT_SET(moveToBr, scratch);
+  XFORM_RA_SET(moveToBr, sprReg & 0x1f);
+  XFORM_RB_SET(moveToBr, (sprReg >> 5) & 0x1f);
+  XFXFORM_XO_SET(moveToBr, MFSPRxop); // From assembly manual
+  insnCodeGen::generate(gen,moveToBr); 
+}
+
+bool insnCodeGen::generateBranchTar(Register scratch, 
+                                    Address dest, 
+                                    bool isCall) {
+  // Generates a branch using TAR to the address specified in dest. 
+  // Returns true if this branch type was successfully used
+
+  // TODO: Add liveness checking for TAR. We are assuming this is not live.
+
+  // Move the address to the scratch register
+  // Done because TAR can only be set called using a register value
+  insnCodeGen::loadImmIntoReg(gen, scratch, dest);
+
+  // Generate the instruction to move the reg -> tar
+  generateMoveToSPR(scratch, SPR_TAR);
+
+  // Aaaand now branch, linking if appropriate
+  instruction branchToBr;
+  branchToBr.clear();
+  XLFORM_OP_SET(branchToBr, BCTARop);
+  XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
+  XLFORM_BA_SET(branchToBr, 0); // Unused
+  XLFORM_BB_SET(branchToBr, 0); // Unused
+  XLFORM_XO_SET(branchToBr, BCTARxop);
+  XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
+  insnCodeGen::generate(gen,branchToBr);
+  return true;
+}
+
+bool insnCodeGen::generateBranchLR(Register scratch, 
+                                    Address dest, 
+                                    bool isCall) {
+  // Generates a branch using LR to the address specified in dest. 
+  // Returns true if this branch type was successfully used
+
+  // TODO: Add liveness checking for LR. We are assuming this is not live.
+
+  // Move the address to the scratch register
+  // Done because TAR can only be set called using a register value
+  insnCodeGen::loadImmIntoReg(gen, scratch, dest);
+
+  // Generate the instruction to move the reg -> tar
+  generateMoveToSPR(scratch, SPR_LR);
+
+  // Aaaand now branch, linking if appropriate
+  instruction branchToBr;
+  branchToBr.clear();
+  XLFORM_OP_SET(branchToBr, BCLRop);
+  XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
+  XLFORM_BA_SET(branchToBr, 0); // Unused
+  XLFORM_BB_SET(branchToBr, 0); // Unused
+  XLFORM_XO_SET(branchToBr, BCLRxop);
+  XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
+  insnCodeGen::generate(gen,branchToBr);
+  return true;
+}
+
+
+bool insnCodeGen::generateBranchCTR(Register scratch, 
+                                    Address dest, 
+                                    bool isCall) {
+  // Generates a branch using TAR to the address specified in dest. 
+  // Returns true if this branch type was successfully used
+
+  // TODO: Add liveness checking for TAR. We are assuming this is not live.
+
+  // Move the address to the scratch register
+  // Done because TAR can only be set called using a register value
+  insnCodeGen::loadImmIntoReg(gen, scratch, dest);
+
+  // Generate the instruction to move the reg -> tar
+  generateMoveToSPR(scratch, SPR_LR);
+
+  // Aaaand now branch, linking if appropriate
+  instruction branchToBr;
+  branchToBr.clear();
+  XLFORM_OP_SET(branchToBr, BCCTRop);
+  XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
+  XLFORM_BA_SET(branchToBr, 0); // Unused
+  XLFORM_BB_SET(branchToBr, 0); // Unused
+  XLFORM_XO_SET(branchToBr, BCCTRxop);
+  XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
+  insnCodeGen::generate(gen,branchToBr);
+  return true;
+}
+
+
+
+
 void insnCodeGen::generateLongBranch(codeGen &gen, 
                                      Address from, 
                                      Address to, 
                                      bool isCall) {
-  bool everythingSaved = false;
-  //fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
-    // First, see if we can cheap out
-    long disp = (to - from);
-    if (ABS(disp) <= MAX_BRANCH) {
-        return generateBranch(gen, disp, isCall);
+  bool usingLR = false;
+  bool usingCTR = false;
+  // If we are a call, the LR is going to be free. Use TAR to save/restore any register
+  if (isCall) {
+      // This is making the assumption R2/R12 has already been setup correctly, 
+      // First generate a scratch register by moving something, i choose R11 to send to TAR
+      generateMoveToSPR(registerSpace::r11, SPR_TAR);
+      
+      // R11 is now free to setup the branch instruction
+      insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
+      generateMoveToSPR(registerSpace::r11, SPR_LR);
+
+      // Return R11 to its original state
+      generateMoveFromSPR(registerSpace::r11, SPR_TAR);
+
+      // Emit the branch instruction
+      instruction branchToBr;
+      branchToBr.clear();
+      XLFORM_OP_SET(branchToBr, BCLRop);
+      XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
+      XLFORM_BA_SET(branchToBr, 0); // Unused
+      XLFORM_BB_SET(branchToBr, 0); // Unused
+      XLFORM_XO_SET(branchToBr, BCLRxop);
+      XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
+      insnCodeGen::generate(gen,branchToBr);
+  } else {
+    // What this does is the following:
+    // 1. Attempt to allocate a scratch register, this is needed to store the destination 
+    //    address temporarily because you can only move registers to SPRs like CTR/LR/TAR.
+    //    - If a scratch register cannot be obtained, see if either CTR or LR are free.
+    //    - If one of those are, store r11 (our new scratch register) into CTR or LR. 
+    //    - after the destination address has been loaded to TAR, we will restore R11 from this value
+    // 2. Calculate the destination address storing it into scratch.
+    // 3. Move the register to the SPR (tar)
+    // 4. Restore the original register value (if a scratch register was not found)
+    // 5. build the branch instruction.
+
+
+
+    Register scratch = gen.rs()->getScratchRegister(gen);
+    if (scratch == REG_NULL) {
+        instPoint *point = gen.point();
+        if (!point) {
+          // No clue if CTR or LR are filled, use broken trap and likely fail.
+            fprintf(stderr, "%s\n", "Using a trap instruction.....");
+            return generateBranchViaTrap(gen, from, to, isCall);
+        }
+        // Grab the register space, and see if LR or CTR are free.
+        // What we are going to do here is use the LR/CTR as temporary store for an existing register value
+        bitArray liveRegs = point->liveRegisters();
+        if (liveRegs[registerSpace::lr] == false) {
+            usingLR = true;
+            // Register 11 is the chosen one for using temporarily.
+            generateMoveToSPR(registerSpace::r11, SPR_LR);
+        } else if (liveRegs[registerSpace::ctr] == false) {
+            usingCTR = true;
+            generateMoveToSPR(registerSpace::r11, SPR_CTR);
+        }
+        if (!usingLR && !usingCTR) {
+            fprintf(stderr, "%s\n", "Using a trap instruction.....");
+            return generateBranchViaTrap(gen, from, to, isCall);
+        }
+    } else {
+        fprintf(stderr, "%s\n", "Generating branch with TAR.....");
+        generateBranchTar(scratch, to, isCall);
+        return;
     }
 
-    // We can use a register branch via the LR or CTR, if either of them
-    // is free.
-    
-    // Let's see if we can grab a free GPregister...
-    instPoint *point = gen.point();
-    if (!point) {
-        // fprintf(stderr, " %s[%d] No point generateBranchViaTrap \n", FILE__, __LINE__);
-        fprintf(stderr, "[insnCodeGen::generateLongBranch] Building long branch from %llx to %llx at position %llx and this branch call status is %d\n", from, to, gen.currAddr(), isCall);
-        return generateBranchViaTrap(gen, from, to, isCall);
-    }
+    // Now the fun stuff....
+    // Loed destination value into r11, copy it to SPR_TAR, restore the original R11 value.
+    insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
+    generateMoveToSPR(registerSpace::r11, SPR_TAR);
+    if (usingCTR)
+      generateMoveFromSPR(registerSpace::r11, SPR_CTR);
+    else if (usingLR)
+      generateMoveFromSPR(registerSpace::r11, SPR_LR);
+    else 
+      assert("SHOULD NEVER BE HERE" == 0);
 
-    assert(point);
-    
-    // Could see if the codeGen has it, but right now we have assert
-    // code there and we don't want to hit that.
-    registerSpace *rs = registerSpace::actualRegSpace(point);
-    gen.setRegisterSpace(rs);
-    
-    Register scratch = rs->getScratchRegister(gen, true);
-
-
-    if (scratch == REG_NULL) { 
-        // Just save and restore everything, this is bad but its likely safe and can be revisted later.
-        // GenerateSavesBaseTrampStyle(gen);
-        // everythingSaved = true;
-        // do nothing, return
-        
-        // scratch = registerSpace::r12;
-        // assert(everythingSaved != true)
-        // On Linux we save under the stack and hope it doesn't
-        // cause problems.
-        
-        // original
-        //fprintf(stderr, " %s[%d] No registers generateBranchViaTrap \n", FILE__, __LINE__);
-        return generateBranchViaTrap(gen, from, to, isCall);
-    }
-    
-    // Load the destination into our scratch register
-    insnCodeGen::loadImmIntoReg(gen, scratch, to);
-    unsigned branchRegister = registerSpace::lr;
-    // Find out whether the LR or CTR is "dead"...
-    // bitArray liveRegs = point->liveRegisters();
-    // unsigned branchRegister = 0;
-    // if (liveRegs[registerSpace::lr] == false || everythingSaved == true) {
-    //     branchRegister = registerSpace::lr;
-    // }
-    // else {
-    //     // live LR means we need to save/restore somewhere
-    //     if(isCall) return generateBranchViaTrap(gen, from, to, isCall);
-    //     if (liveRegs[registerSpace::ctr] == false) {
-    //         branchRegister = registerSpace::ctr;
-    //     }
-    // }
-
-    if (!branchRegister) {
-        fprintf(stderr, " %s[%d] No branch register generateBranchViaTrap \n", FILE__, __LINE__);
-        return generateBranchViaTrap(gen, from, to, isCall); 
-    }
-    
-    assert(branchRegister);
-
-    instruction moveToBr;
-    moveToBr.clear();
-    XFXFORM_OP_SET(moveToBr, MTSPRop);
-    XFXFORM_RT_SET(moveToBr, scratch);
-    if (branchRegister == registerSpace::lr) {
-        XFORM_RA_SET(moveToBr, SPR_LR & 0x1f);
-        XFORM_RB_SET(moveToBr, (SPR_LR >> 5) & 0x1f);
-        // The two halves (top 5 bits/bottom 5 bits) are _reversed_ in this encoding. 
-    }
-    else {
-        XFORM_RA_SET(moveToBr, SPR_CTR & 0x1f);
-        XFORM_RB_SET(moveToBr, (SPR_CTR >> 5) & 0x1f);
-    }
-    XFXFORM_XO_SET(moveToBr, MTSPRxop); // From assembly manual
-    insnCodeGen::generate(gen,moveToBr);
-    // Aaaand now branch, linking if appropriate
+    // Emit the call instruction.
     instruction branchToBr;
     branchToBr.clear();
-    XLFORM_OP_SET(branchToBr, BCLRop);
+    XLFORM_OP_SET(branchToBr, BCTARop);
     XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
     XLFORM_BA_SET(branchToBr, 0); // Unused
     XLFORM_BB_SET(branchToBr, 0); // Unused
-    if (branchRegister == registerSpace::lr) {
-        XLFORM_XO_SET(branchToBr, BCLRxop);
-    }
-    else {
-        XLFORM_XO_SET(branchToBr, BCCTRxop);
-    }
+    XLFORM_XO_SET(branchToBr, BCTARxop);
     XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
-    insnCodeGen::generate(gen,branchToBr);
+    insnCodeGen::generate(gen, branchToBr);    
+  }
+  return;
 
-    // restore the world
-    if(everythingSaved)
-      GenerateRestoresBaseTrampStyle(gen);
+  // bool everythingSaved = false;
+  // //fprintf(stderr, "[insnCodeGen::generateLongBranch] Generating long branch from %p to %p\n", from, to);
+  //   // First, see if we can cheap out
+  //   long disp = (to - from);
+  //   if (ABS(disp) <= MAX_BRANCH) {
+  //       return generateBranch(gen, disp, isCall);
+  //   }
+
+  //   // We can use a register branch via the LR or CTR, if either of them
+  //   // is free.
+    
+  //   // Let's see if we can grab a free GPregister...
+  //   instPoint *point = gen.point();
+  //   if (!point) {
+  //       // fprintf(stderr, " %s[%d] No point generateBranchViaTrap \n", FILE__, __LINE__);
+  //       fprintf(stderr, "This is an instruction which we would trap on\n");
+  //       fprintf(stderr, "[insnCodeGen::generateLongBranch] Building long branch from %llx to %llx at position %llx and this branch call status is %d\n", from, to, gen.currAddr(), isCall);
+  //       // Generate branch via traps is broken, never call it. 
+  //       // assert(1 == 0);
+  //       // return generateBranchViaTrap(gen, from, to, isCall);
+  //   }
+
+  //   if 
+  //   // Could see if the codeGen has it, but right now we have assert
+  //   // code there and we don't want to hit that.
+  //   registerSpace *rs = registerSpace::actualRegSpace(point);
+  //   gen.setRegisterSpace(rs);
+  //   Register scratch = rs->getScratchRegister(gen, true);
+  //   // 
+  //   assert(scratch == REG_NULL);
+
+  //   if (scratch == REG_NULL) { 
+  //       // Just save and restore everything, this is bad but its likely safe and can be revisted later.
+  //       // GenerateSavesBaseTrampStyle(gen);
+  //       // everythingSaved = true;
+  //       // do nothing, return
+        
+  //       // scratch = registerSpace::r12;
+  //       // assert(everythingSaved != true)
+  //       // On Linux we save under the stack and hope it doesn't
+  //       // cause problems.
+        
+  //       // original
+  //       //fprintf(stderr, " %s[%d] No registers generateBranchViaTrap \n", FILE__, __LINE__);
+  //       return generateBranchViaTrap(gen, from, to, isCall);
+  //   }
+    
+  //   // Load the destination into our scratch register
+  //   insnCodeGen::loadImmIntoReg(gen, scratch, to);
+  //   unsigned branchRegister = registerSpace::lr;
+  //   // Find out whether the LR or CTR is "dead"...
+  //   //bitArray liveRegs = point->liveRegisters();
+  //   // unsigned branchRegister = 0;
+  //   // if (liveRegs[registerSpace::lr] == false || everythingSaved == true) {
+  //   //     branchRegister = registerSpace::lr;
+  //   // }
+  //   // else {
+  //   //     // live LR means we need to save/restore somewhere
+  //   //     if(isCall) return generateBranchViaTrap(gen, from, to, isCall);
+  //   //     if (liveRegs[registerSpace::ctr] == false) {
+  //   //         branchRegister = registerSpace::ctr;
+  //   //     }
+  //   // }
+
+  //   if (!branchRegister) {
+  //       fprintf(stderr, " %s[%d] No branch register generateBranchViaTrap \n", FILE__, __LINE__);
+  //       return generateBranchViaTrap(gen, from, to, isCall); 
+  //   }
+    
+  //   assert(branchRegister);
+
+  //   instruction moveToBr;
+  //   moveToBr.clear();
+  //   XFXFORM_OP_SET(moveToBr, MTSPRop);
+  //   XFXFORM_RT_SET(moveToBr, scratch);
+  //   if (branchRegister == registerSpace::lr) {
+  //       XFORM_RA_SET(moveToBr, SPR_LR & 0x1f);
+  //       XFORM_RB_SET(moveToBr, (SPR_LR >> 5) & 0x1f);
+  //       // The two halves (top 5 bits/bottom 5 bits) are _reversed_ in this encoding. 
+  //   }
+  //   else {
+  //       XFORM_RA_SET(moveToBr, SPR_CTR & 0x1f);
+  //       XFORM_RB_SET(moveToBr, (SPR_CTR >> 5) & 0x1f);
+  //   }
+  //   XFXFORM_XO_SET(moveToBr, MTSPRxop); // From assembly manual
+  //   insnCodeGen::generate(gen,moveToBr);
+  //   // Aaaand now branch, linking if appropriate
+  //   instruction branchToBr;
+  //   branchToBr.clear();
+  //   XLFORM_OP_SET(branchToBr, BCLRop);
+  //   XLFORM_BT_SET(branchToBr, 0x14); // From architecture manual
+  //   XLFORM_BA_SET(branchToBr, 0); // Unused
+  //   XLFORM_BB_SET(branchToBr, 0); // Unused
+  //   if (branchRegister == registerSpace::lr) {
+  //       XLFORM_XO_SET(branchToBr, BCLRxop);
+  //   }
+  //   else {
+  //       XLFORM_XO_SET(branchToBr, BCCTRxop);
+  //   }
+  //   XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
+  //   insnCodeGen::generate(gen,branchToBr);
+
+  //   // restore the world
+  //   if(everythingSaved)
+  //     GenerateRestoresBaseTrampStyle(gen);
 }
 
 void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, bool isCall) {
