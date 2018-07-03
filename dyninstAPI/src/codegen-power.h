@@ -162,6 +162,8 @@ class insnCodeGen {
   bool generateBranchCTR(codeGen &gen,Register scratch, 
                          Address dest, 
                          bool isCall);
+
+  
 };
 
 #endif
