@@ -437,9 +437,6 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     // 3. Move the register to the SPR (tar)
     // 4. Restore the original register value (if a scratch register was not found)
     // 5. build the branch instruction.
-
-
-
     Register scratch = gen.rs()->getScratchRegister(gen);
     if (scratch == REG_NULL) {
         instPoint *point = gen.point();
@@ -454,10 +451,10 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         if (liveRegs[registerSpace::lr] == false) {
             usingLR = true;
             // Register 11 is the chosen one for using temporarily.
-            generateMoveToSPR(registerSpace::r11, SPR_LR);
+            generateMoveToSPR(gen, registerSpace::r11, SPR_LR);
         } else if (liveRegs[registerSpace::ctr] == false) {
             usingCTR = true;
-            generateMoveToSPR(registerSpace::r11, SPR_CTR);
+            generateMoveToSPR(gen, registerSpace::r11, SPR_CTR);
         }
         if (!usingLR && !usingCTR) {
             fprintf(stderr, "%s\n", "Using a trap instruction.....");
