@@ -321,7 +321,7 @@ bool insnCodeGen::generateBranchTar(Register scratch,
   insnCodeGen::loadImmIntoReg(gen, scratch, dest);
 
   // Generate the instruction to move the reg -> tar
-  generateMoveToSPR(scratch, SPR_TAR);
+  insnCodeGen::generateMoveToSPR(scratch, SPR_TAR);
 
   // Aaaand now branch, linking if appropriate
   instruction branchToBr;
@@ -349,7 +349,7 @@ bool insnCodeGen::generateBranchLR(Register scratch,
   insnCodeGen::loadImmIntoReg(gen, scratch, dest);
 
   // Generate the instruction to move the reg -> tar
-  generateMoveToSPR(scratch, SPR_LR);
+  insnCodeGen::generateMoveToSPR(scratch, SPR_LR);
 
   // Aaaand now branch, linking if appropriate
   instruction branchToBr;
@@ -378,7 +378,7 @@ bool insnCodeGen::generateBranchCTR(Register scratch,
   insnCodeGen::loadImmIntoReg(gen, scratch, dest);
 
   // Generate the instruction to move the reg -> tar
-  generateMoveToSPR(scratch, SPR_LR);
+  insnCodeGen::generateMoveToSPR(scratch, SPR_LR);
 
   // Aaaand now branch, linking if appropriate
   instruction branchToBr;
@@ -406,14 +406,14 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
   if (isCall) {
       // This is making the assumption R2/R12 has already been setup correctly, 
       // First generate a scratch register by moving something, i choose R11 to send to TAR
-      generateMoveToSPR(registerSpace::r11, SPR_TAR);
+      insnCodeGen::generateMoveToSPR(registerSpace::r11, SPR_TAR);
       
       // R11 is now free to setup the branch instruction
       insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
-      generateMoveToSPR(registerSpace::r11, SPR_LR);
+      insnCodeGen::generateMoveToSPR(registerSpace::r11, SPR_LR);
 
       // Return R11 to its original state
-      generateMoveFromSPR(registerSpace::r11, SPR_TAR);
+      insnCodeGen::generateMoveFromSPR(registerSpace::r11, SPR_TAR);
 
       // Emit the branch instruction
       instruction branchToBr;
@@ -464,18 +464,18 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         }
     } else {
         fprintf(stderr, "%s\n", "Generating branch with TAR.....");
-        generateBranchTar(scratch, to, isCall);
+        insnCodeGen::generateBranchTar(scratch, to, isCall);
         return;
     }
 
     // Now the fun stuff....
     // Loed destination value into r11, copy it to SPR_TAR, restore the original R11 value.
     insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
-    generateMoveToSPR(registerSpace::r11, SPR_TAR);
+    insnCodeGen::generateMoveToSPR(registerSpace::r11, SPR_TAR);
     if (usingCTR)
-      generateMoveFromSPR(registerSpace::r11, SPR_CTR);
+      insnCodeGen::generateMoveFromSPR(registerSpace::r11, SPR_CTR);
     else if (usingLR)
-      generateMoveFromSPR(registerSpace::r11, SPR_LR);
+      insnCodeGen::generateMoveFromSPR(registerSpace::r11, SPR_LR);
     else 
       assert("SHOULD NEVER BE HERE" == 0);
 
