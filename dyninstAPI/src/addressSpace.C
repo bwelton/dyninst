@@ -759,14 +759,14 @@ func_instance *AddressSpace::findOnlyOneFunction(const string &name,
    pdvector<func_instance *> allFuncs;
    func_instance * ret;
 
-   if (name.find("DYNINST_unlock_tramp_guard") != std::string::npos) {
-      // std::ofstream outFile("InternalFunctionList.txt", std::ios::out);
-      for( auto modObj : mapped_objects) {
-        std::vector<func_instance *> retVec;
-        modObj->getAllFunctions(retVec);
-      }
-      // outFile.close();
-   }
+   // if (name.find("DYNINST_unlock_tramp_guard") != std::string::npos) {
+   //    // std::ofstream outFile("InternalFunctionList.txt", std::ios::out);
+   //    for( auto modObj : mapped_objects) {
+   //      std::vector<func_instance *> retVec;
+   //      modObj->getAllFunctions(retVec);
+   //    }
+   //    // outFile.close();
+   // }
 
    if (!findFuncsByAll(name.c_str(), allFuncs, lib.c_str()))
       return NULL;
