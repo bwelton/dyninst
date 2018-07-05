@@ -689,7 +689,7 @@ bool mapped_object::getAllFunctions(pdvector<func_instance *> &funcs) {
     const CodeObject::funclist &img_funcs = parse_img()->getAllFunctions();
     CodeObject::funclist::const_iterator fit = img_funcs.begin();
     for( ; fit != img_funcs.end(); ++fit) {
-        outFile << fit->name << "," << std::hex << fit->addr() << std::endl;
+        outFile << (*fit)->name << "," << std::hex << (*fit)->addr() << std::endl;
         if(funcs_.find((parse_func*)*fit) == funcs_.end()) {
             findFunction((parse_func*)*fit);
         }
