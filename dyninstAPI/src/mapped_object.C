@@ -682,15 +682,20 @@ const pdvector<mapped_module *> &mapped_object::getModules() {
 
 bool mapped_object::getAllFunctions(pdvector<func_instance *> &funcs) {
     unsigned start = funcs.size();
+    std::string tmp = fileName();
+    tmp = tmp + std::string(".funclist");
+    std::ofstream outFile(tmp.c_str(), std::ios::out);
 
     const CodeObject::funclist &img_funcs = parse_img()->getAllFunctions();
     CodeObject::funclist::const_iterator fit = img_funcs.begin();
     for( ; fit != img_funcs.end(); ++fit) {
+        outFile << fit->name << "," << std::hex << fit->addr() << std::endl;
         if(funcs_.find((parse_func*)*fit) == funcs_.end()) {
             findFunction((parse_func*)*fit);
         }
         funcs.push_back(SCAST_FI(funcs_[*fit]));
     }
+    outFile.close();
     return funcs.size() > start;
 }
 
