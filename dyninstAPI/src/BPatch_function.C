@@ -143,6 +143,9 @@ BPatch_function::~BPatch_function()
    assert(num_erased == 1);
 }
 
+uint64_t BPatch_function::getSize() {
+  return (uint64_t)lowlevel_func()->footprint();
+}
 
 //dynC internal:
 
