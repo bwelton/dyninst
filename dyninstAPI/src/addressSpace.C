@@ -762,7 +762,8 @@ func_instance *AddressSpace::findOnlyOneFunction(const string &name,
    if (name.find("DYNINST_unlock_tramp_guard") != std::string::npos) {
       std::ofstream outFile("InternalFunctionList.txt", std::ios::out);
       for( auto modObj : mapped_objects) {
-        std::vector<func_instance *> retVec = modObj->getAllFunctions();
+        std::vector<func_instance *> retVec;
+        modObj->getAllFunctions(retVec);
         for (auto fun1 : retVec){
           outFile << fun1->name() << "," << std::hex << fun1->getPtrAddress() << std::endl;
         }
