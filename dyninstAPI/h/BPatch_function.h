@@ -161,8 +161,8 @@ public:
     bool parseNewEdge(Dyninst::Address source, Dyninst::Address target);
     void relocateFunction();
     bool getSharedFuncs(std::set<BPatch_function*> &funcs);
-    uint64_t GetSize();
-    
+
+    uint64_t getSize();
     void addParam(Dyninst::SymtabAPI::localVar *lvar);
 
 //    void addParam(const char * _name, BPatch_type *_type, int _linenum,
