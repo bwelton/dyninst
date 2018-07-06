@@ -403,10 +403,10 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
                                      bool isCall) {
   bool usingLR = false;
   bool usingCTR = false;
-  fprintf(stderr, "%s\n", "inside generate long branch");
+  //fprintf(stderr, "%s\n", "inside generate long branch");
   // If we are a call, the LR is going to be free. Use TAR to save/restore any register
   if (isCall) {
-    fprintf(stderr, "%s\n", "generating call long branch using LR");
+    //fprintf(stderr, "%s\n", "generating call long branch using LR");
       // This is making the assumption R2/R12 has already been setup correctly, 
       // First generate a scratch register by moving something, i choose R11 to send to TAR
       insnCodeGen::generateMoveToSPR(gen,registerSpace::r11, SPR_TAR);
@@ -429,7 +429,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
       XLFORM_LK_SET(branchToBr, (isCall ? 1 : 0));
       insnCodeGen::generate(gen,branchToBr);
   } else {
-    fprintf(stderr, "%s\n", "generating non-call long branch using TAR");
+    //fprintf(stderr, "%s\n", "generating non-call long branch using TAR");
     // What this does is the following:
     // 1. Attempt to allocate a scratch register, this is needed to store the destination 
     //    address temporarily because you can only move registers to SPRs like CTR/LR/TAR.
@@ -440,7 +440,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     // 3. Move the register to the SPR (tar)
     // 4. Restore the original register value (if a scratch register was not found)
     // 5. build the branch instruction.
-    Register scratch =REG_NULL;
+    Register scratch = REG_NULL;
     // TODO: Fix this, this should work....
     //= gen.rs()->getScratchRegister(gen);
     if (scratch == REG_NULL) {
@@ -465,8 +465,8 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
             fprintf(stderr, "%s\n", "Using a trap instruction.....");
             return generateBranchViaTrap(gen, from, to, isCall);
         }
-    } else {
-        fprintf(stderr, "%s\n", "Generating branch with TAR.....");
+    } else if (scratch != REG_NULL) {
+        //fprintf(stderr, "%s\n", "Generating branch with TAR.....");
         insnCodeGen::generateBranchTar(gen, scratch, to, isCall);
         return;
     }
