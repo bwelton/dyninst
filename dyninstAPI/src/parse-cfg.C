@@ -162,7 +162,7 @@ bool parse_func::isInstrumentableByFunctionName()
     // XXXXX kludge: these functions are called by DYNINSTgetCPUtime, 
     // they can't be instrumented or we would have an infinite loop
     if (prettyName() == "gethrvtime" || prettyName() == "_divdi3"
-        || prettyName() == "GetProcessTimes" || prettyName() == "main")
+        || prettyName() == "GetProcessTimes")
         return false;
     return true;
 }
