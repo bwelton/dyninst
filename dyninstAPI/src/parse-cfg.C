@@ -594,7 +594,9 @@ bool parse_func::isInstrumentable() {
           return false;
       }
     }
-    fprintf(stderr, "%s %s %s %llu\n","Symtab Says function ", prettyName().c_str(), " has size of " , func_->getSize());
+    //fprintf(stderr, "%s %s %s %llu\n","Symtab Says function ", prettyName().c_str(), " has size of " , func_->getSize());
+    if (func_->getSize() < 6 * 0x8)
+      return false;
     //if (func_->getSize())
    if (hasUnresolvedCF()) {
       return false;
