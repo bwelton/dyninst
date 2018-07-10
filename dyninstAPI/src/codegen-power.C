@@ -455,7 +455,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         std::vector<Register> potentialRegisters = {registerSpace::r3, registerSpace::r4, registerSpace::r5, registerSpace::r6, registerSpace::r7, registerSpace::r8, registerSpace::r9, registerSpace::r10};
         bitArray liveRegs = point->liveRegisters();
 
-        for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1)
+        for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1){
           if (liveRegs[potentialRegisters[i]] == false) {
             scratch = potentialRegisters[i]; 
             break;
