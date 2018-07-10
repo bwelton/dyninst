@@ -454,17 +454,26 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         // What we are going to do here is use the LR/CTR as temporary store for an existing register value
         std::vector<Register> potentialRegisters = {registerSpace::r3, registerSpace::r4, registerSpace::r5, registerSpace::r6, registerSpace::r7, registerSpace::r8, registerSpace::r9, registerSpace::r10};
         bitArray liveRegs = point->liveRegisters();
-        if (liveRegs[registerSpace::lr] == false) {
-            usingLR = true;
-            // Register 11 is the chosen one for using temporarily.
-            generateMoveToSPR(gen, registerSpace::r11, SPR_LR);
-        } else if (liveRegs[registerSpace::ctr] == false) {
-            usingCTR = true;
-            generateMoveToSPR(gen, registerSpace::r11, SPR_CTR);
+
+        for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1)
+          if (liveRegs[potentialRegisters[i]] == false) {
+            scratch = potentialRegisters[i]; 
+            break;
+          }
         }
-        if (!usingLR && !usingCTR) {
-            fprintf(stderr, "%s\n", "Couldn't grab free register - Using a trap instruction.....");
-            return generateBranchViaTrap(gen, from, to, isCall);
+        if (scratch == REG_NULL) {
+          if (liveRegs[registerSpace::lr] == false) {
+              usingLR = true;
+              // Register 11 is the chosen one for using temporarily.
+              generateMoveToSPR(gen, registerSpace::r11, SPR_LR);
+          } else if (liveRegs[registerSpace::ctr] == false) {
+              usingCTR = true;
+              generateMoveToSPR(gen, registerSpace::r11, SPR_CTR);
+          }
+          if (!usingLR && !usingCTR) {
+              fprintf(stderr, "%s\n", "Couldn't grab free register - Using a trap instruction.....");
+              return generateBranchViaTrap(gen, from, to, isCall);
+          }
         }
     } else if (scratch != REG_NULL) {
         //fprintf(stderr, "%s\n", "Generating branch with TAR.....");
@@ -472,17 +481,21 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         return;
     }
 
-    // Now the fun stuff....
-    // Loed destination value into r11, copy it to SPR_TAR, restore the original R11 value.
-    insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
-    insnCodeGen::generateMoveToSPR(gen, registerSpace::r11, SPR_TAR);
-    if (usingCTR)
-      insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_CTR);
-    else if (usingLR)
-      insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_LR);
-    else 
-      assert("SHOULD NEVER BE HERE" == 0);
-
+    if (scratch == REG_NULL) {
+      // Now the fun stuff....
+      // Loed destination value into r11, copy it to SPR_TAR, restore the original R11 value.
+      insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
+      insnCodeGen::generateMoveToSPR(gen, registerSpace::r11, SPR_TAR);
+      if (usingCTR)
+        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_CTR);
+      else if (usingLR)
+        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_LR);
+      else 
+        assert("SHOULD NEVER BE HERE" == 0);
+    } else {
+      insnCodeGen::loadImmIntoReg(gen, scratch, to);
+      insnCodeGen::generateMoveToSPR(gen, scratch, SPR_TAR);      
+    }
     // Emit the call instruction.
     instruction branchToBr;
     branchToBr.clear();
