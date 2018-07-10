@@ -456,8 +456,8 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         bitArray liveRegs = point->liveRegisters();
 
         for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1){
-          if (liveRegs[potentialRegisters[i]] == false) {
-            scratch = potentialRegisters[i]; 
+          if (liveRegs[potentialRegisters[iter]] == false) {
+            scratch = potentialRegisters[iter]; 
             break;
           }
         }
