@@ -447,7 +447,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         instPoint *point = gen.point();
         if (!point) {
           // No clue if CTR or LR are filled, use broken trap and likely fail.
-            fprintf(stderr, "%s\n", "Using a trap instruction.....");
+            fprintf(stderr, "%s\n", "Couldn't grab points - Using a trap instruction.....");
             return generateBranchViaTrap(gen, from, to, isCall);
         }
         // Grab the register space, and see if LR or CTR are free.
@@ -462,7 +462,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
             generateMoveToSPR(gen, registerSpace::r11, SPR_CTR);
         }
         if (!usingLR && !usingCTR) {
-            fprintf(stderr, "%s\n", "Using a trap instruction.....");
+            fprintf(stderr, "%s\n", "Couldn't grab free register - Using a trap instruction.....");
             return generateBranchViaTrap(gen, from, to, isCall);
         }
     } else if (scratch != REG_NULL) {
