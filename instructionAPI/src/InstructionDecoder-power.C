@@ -247,13 +247,7 @@ namespace Dyninst
       isRAWritten = false;
       isFPInsn = false;
       bcIsConditional = false;
-#if !defined(arch_ppc_little_endian)
-      insn = b.start[0] << 24 | b.start[1] << 16 |
-      b.start[2] << 8 | b.start[3];
-#else
-        insn = b.start[0] | b.start[1] << 8 |
-      b.start[2] << 16 | b.start[3] << 24;
-#endif
+      insn = *((const uint32_t*)b.start);
 #if defined(DEBUG_RAW_INSN)        
         cout.width(0);
         cout << "0x";
@@ -304,25 +298,25 @@ namespace Dyninst
     void InstructionDecoder_power::LU()
     {
         L<size>();
-        insn_in_progress->appendOperand(makeRAExpr(), false, true);
+        insn_in_progress->appendOperand(makeRAExpr(), false, true, true);
     }
     template <Result_Type size>
     void InstructionDecoder_power::STU()
     {
         ST<size>();
-        insn_in_progress->appendOperand(makeRAExpr(), false, true);
+        insn_in_progress->appendOperand(makeRAExpr(), false, true, true);
     }
     template <Result_Type size>
     void InstructionDecoder_power::LUX()
     {
         LX<size>();
-        insn_in_progress->appendOperand(makeRAExpr(), false, true);
+        insn_in_progress->appendOperand(makeRAExpr(), false, true, true);
     }
     template <Result_Type size>
     void InstructionDecoder_power::STUX()
     {
         STX<size>();
-        insn_in_progress->appendOperand(makeRAExpr(), false, true);
+        insn_in_progress->appendOperand(makeRAExpr(), false, true, true);
     }
     void InstructionDecoder_power::LK()
     {
@@ -538,6 +532,11 @@ namespace Dyninst
     }
     Expression::Ptr InstructionDecoder_power::makeSHExpr()
     {
+        // For sradi instruction, the SH field is bit30 || bit16-20
+        if (field<0,5>(insn) == 31 && field<21,29>(insn) == 413) {
+            unsigned shift = ((field<30, 30>(insn)) << 5) | (field<16,20>(insn));
+            return Immediate::makeImmediate(Result(u32, shift));
+        }
         return Immediate::makeImmediate(Result(u32, (field<16, 20>(insn))));
     }
     Expression::Ptr InstructionDecoder_power::makeMBExpr()
@@ -565,6 +564,11 @@ namespace Dyninst
         int sprIDlo = field<11, 15>(insn);
         int sprIDhi = field<16, 20>(insn);
         int sprID = (sprIDhi << 5) + sprIDlo;
+
+        // This is mftb, which is equivalent to mfspr Rx, 268 
+        if (field<0,5>(insn) == 31 && field<21,30>(insn) == 371) {
+            sprID = 268;
+        }
         return makeRegisterExpression(makePowerRegID(ppc32::mq, sprID));
     }
 
@@ -583,6 +587,9 @@ namespace Dyninst
         {
             current = &(std::mem_fun(current->next_table)(this));
         }
+	if (findRAAndRS(current)) {
+	    isRAWritten = true;
+	}
         insn_in_progress = const_cast<Instruction*>(insn_to_complete);
         if(current->op == power_op_b ||
            current->op == power_op_bc ||
@@ -675,6 +682,10 @@ using namespace boost::assign;
     }
     const power_entry& InstructionDecoder_power::extended_op_31()
     {
+        // sradi is a special instruction. Its xop is from 21 to 29 and its xop value is 413
+        if (field<21,29>(insn) == 413) {
+            return power_entry::extended_op_31[413];
+        }
         const power_entry& xoform_entry = power_entry::extended_op_31[field<22, 30>(insn)];
         if(find(xoform_entry.operands.begin(), xoform_entry.operands.end(), &InstructionDecoder_power::OE)
            != xoform_entry.operands.end())
@@ -810,7 +821,7 @@ using namespace boost::assign;
         {
             if(isFPInsn)
             {
-                insn_in_progress->appendOperand(makeRegisterExpression(ppc32::fpscw), false, true);
+                insn_in_progress->appendOperand(makeRegisterExpression(ppc32::fpscw), false, true, true);
             }
             else
             {
@@ -931,6 +942,21 @@ using namespace boost::assign;
         isRAWritten = true;
         (translateBitFieldToCR<7, 14, ppc32::ifpscw0, 7>(*this))();
         return;
+    }
+     void InstructionDecoder_power::WC()
+    {
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<9, 10>(insn))), true, false);
+        return;
+    }
+   
+    bool InstructionDecoder_power::findRAAndRS(const power_entry* cur) {
+        bool findRA = false;
+	bool findRS = false;
+	for (auto oit = cur->operands.begin(); oit != cur->operands.end(); ++oit) {
+	    if ((*oit) == &InstructionDecoder_power::RA) findRA = true;
+	    if ((*oit) == &InstructionDecoder_power::RS) findRS = true;
+	}
+	return findRA && findRS;
     }
 
     void InstructionDecoder_power::mainDecode()

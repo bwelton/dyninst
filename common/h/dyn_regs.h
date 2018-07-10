@@ -55,8 +55,9 @@ namespace Dyninst
         Arch_x86_64 = 0x18000000,
         Arch_ppc32  = 0x24000000,
         Arch_ppc64  = 0x28000000,
-		Arch_aarch32 = 0x44000000, //for later use
-		Arch_aarch64 = 0x48000000
+        Arch_aarch32 = 0x44000000, //for later use
+        Arch_aarch64 = 0x48000000,
+        Arch_cuda  = 0x88000000
     } Architecture;
 
 
@@ -107,6 +108,7 @@ namespace Dyninst
         bool isSyscallNumberReg() const;
         bool isSyscallReturnValueReg() const;
 	bool isFlag() const;
+	bool isZeroFlag() const;
 
         void getROSERegister(int &c, int &n, int &p);
 
@@ -813,12 +815,32 @@ namespace Dyninst
       DEF_REGISTER(xer,      1 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(lr,       8 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(ctr,      9 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(amr,     13 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(dscr,    17 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(dsisr,   18 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(dar,     19 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(dec,     22 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(sdr1,    25 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(srr0,    26 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(srr1,    27 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cfar,    28 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(amr_pri, 29 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(pid,     48 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(gdecar,  53 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(decar,   54 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(mcivpr,  55 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(lper,    56 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(lperu,   57 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(csrr0,   58 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(csrr1,   59 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(gtsrwr,  60 | SPR | Arch_ppc32, "ppc32");
+//      DEF_REGISTER(iamr,    61 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(esr,     62 | SPR | Arch_ppc32, "ppc32");
+//      DEF_REGISTER(ivpr,    66 | SPR | Arch_ppc32, "ppc32");
+
+      DEF_REGISTER(vrsave, 256 | SPR | Arch_ppc32, "ppc32");
+
+
       DEF_REGISTER(sprg0,  272 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(sprg1,  273 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(sprg2,  274 | SPR | Arch_ppc32, "ppc32");
@@ -889,6 +911,42 @@ namespace Dyninst
       DEF_REGISTER(cr,     629 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(or3,    630 | SPR | Arch_ppc32, "ppc32");
       DEF_REGISTER(trap,   631 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr0l,   700 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr0g,   701 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr0e,   702 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr0s,   703 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr1l,   704 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr1g,   705 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr1e,   706 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr1s,   707 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr2l,   708 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr2g,   709 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr2e,   710 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr2s,   711 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr3l,   712 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr3g,   713 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr3e,   714 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr3s,   715 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr4l,   716 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr4g,   717 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr4e,   718 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr4s,   719 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr5l,   720 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr5g,   721 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr5e,   722 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr5s,   723 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr6l,   724 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr6g,   725 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr6e,   726 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr6s,   727 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr7l,   728 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr7g,   729 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr7e,   730 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(cr7s,   731 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(ppr,    896 | SPR | Arch_ppc32, "ppc32");
+      DEF_REGISTER(ppr32,  898 | SPR | Arch_ppc32, "ppc32");
+
+
    }
    namespace ppc64 {
       const signed int GPR   = 0x00010000;
@@ -1002,6 +1060,7 @@ namespace Dyninst
       DEF_REGISTER(sdr1,    25 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(srr0,    26 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(srr1,    27 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(vrsave, 256 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(sprg0,  272 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(sprg1,  273 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(sprg2,  274 | SPR | Arch_ppc64, "ppc64");
@@ -1070,6 +1129,42 @@ namespace Dyninst
       DEF_REGISTER(cr,     629 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(or3,    630 | SPR | Arch_ppc64, "ppc64");
       DEF_REGISTER(trap,   631 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr0l,   700 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr0g,   701 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr0e,   702 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr0s,   703 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr1l,   704 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr1g,   705 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr1e,   706 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr1s,   707 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr2l,   708 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr2g,   709 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr2e,   710 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr2s,   711 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr3l,   712 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr3g,   713 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr3e,   714 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr3s,   715 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr4l,   716 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr4g,   717 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr4e,   718 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr4s,   719 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr5l,   720 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr5g,   721 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr5e,   722 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr5s,   723 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr6l,   724 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr6g,   725 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr6e,   726 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr6s,   727 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr7l,   728 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr7g,   729 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr7e,   730 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(cr7s,   731 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(ppr,    896 | SPR | Arch_ppc64, "ppc64");
+      DEF_REGISTER(ppr32,  898 | SPR | Arch_ppc64, "ppc64");
+
+
    }
 
 	namespace aarch64{
@@ -1380,11 +1475,11 @@ namespace Dyninst
       DEF_REGISTER(wsp,      0 | D_REG  |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(pc,       1 | FULL   |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(pstate,   2 | D_REG  |SPR | Arch_aarch64, "aarch64");
+      DEF_REGISTER(xzr,		 3 | FULL   |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(n,   N_FLAG | BIT    |FLAG| Arch_aarch64, "aarch64");
       DEF_REGISTER(z,   Z_FLAG | BIT    |FLAG| Arch_aarch64, "aarch64");
       DEF_REGISTER(c,   C_FLAG | BIT    |FLAG| Arch_aarch64, "aarch64");
       DEF_REGISTER(v,   V_FLAG | BIT    |FLAG| Arch_aarch64, "aarch64");
-      DEF_REGISTER(zr,		 3 | FULL   |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(wzr,		 3 | D_REG  |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(fpcr,     4 | D_REG  |SPR | Arch_aarch64, "aarch64");
       DEF_REGISTER(fpsr,     5 | D_REG  |SPR | Arch_aarch64, "aarch64");
