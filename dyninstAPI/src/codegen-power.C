@@ -409,14 +409,14 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     //fprintf(stderr, "%s\n", "generating call long branch using LR");
       // This is making the assumption R2/R12 has already been setup correctly, 
       // First generate a scratch register by moving something, i choose R11 to send to TAR
-      insnCodeGen::generateMoveToSPR(gen,registerSpace::r11, SPR_TAR);
+      insnCodeGen::generateMoveToSPR(gen,registerSpace::r10, SPR_TAR);
       
-      // R11 is now free to setup the branch instruction
-      insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
-      insnCodeGen::generateMoveToSPR(gen,registerSpace::r11, SPR_LR);
+      // r10 is now free to setup the branch instruction
+      insnCodeGen::loadImmIntoReg(gen, registerSpace::r10, to);
+      insnCodeGen::generateMoveToSPR(gen,registerSpace::r10, SPR_LR);
 
-      // Return R11 to its original state
-      insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_TAR);
+      // Return r10 to its original state
+      insnCodeGen::generateMoveFromSPR(gen, registerSpace::r10, SPR_TAR);
 
       // Emit the branch instruction
       instruction branchToBr;
@@ -465,10 +465,10 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
           if (liveRegs[registerSpace::lr] == false) {
               usingLR = true;
               // Register 11 is the chosen one for using temporarily.
-              generateMoveToSPR(gen, registerSpace::r11, SPR_LR);
+              generateMoveToSPR(gen, registerSpace::r10, SPR_LR);
           } else if (liveRegs[registerSpace::ctr] == false) {
               usingCTR = true;
-              generateMoveToSPR(gen, registerSpace::r11, SPR_CTR);
+              generateMoveToSPR(gen, registerSpace::r10, SPR_CTR);
           }
           if (!usingLR && !usingCTR) {
               fprintf(stderr, "%s\n", "Couldn't grab free register - Using a trap instruction.....");
@@ -484,12 +484,12 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     if (scratch == REG_NULL) {
       // Now the fun stuff....
       // Loed destination value into r11, copy it to SPR_TAR, restore the original R11 value.
-      insnCodeGen::loadImmIntoReg(gen, registerSpace::r11, to);
-      insnCodeGen::generateMoveToSPR(gen, registerSpace::r11, SPR_TAR);
+      insnCodeGen::loadImmIntoReg(gen, registerSpace::r10, to);
+      insnCodeGen::generateMoveToSPR(gen, registerSpace::r10, SPR_TAR);
       if (usingCTR)
-        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_CTR);
+        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r10, SPR_CTR);
       else if (usingLR)
-        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r11, SPR_LR);
+        insnCodeGen::generateMoveFromSPR(gen, registerSpace::r10, SPR_LR);
       else 
         assert("SHOULD NEVER BE HERE" == 0);
     } else {
