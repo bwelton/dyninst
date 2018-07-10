@@ -821,7 +821,7 @@ using namespace boost::assign;
         {
             if(isFPInsn)
             {
-                insn_in_progress->appendOperand(makeRegisterExpression(ppc32::fpscw), false, true, true);
+                insn_in_progress->appendOperand(makeRegisterExpression(ppc32::fpscw), false, true);
             }
             else
             {
@@ -929,12 +929,12 @@ using namespace boost::assign;
     }
     void InstructionDecoder_power::NB()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn))), true);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn))), true, false);
         return;
     }
     void InstructionDecoder_power::U()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn) >> 1)), true);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn) >> 1)), true, false);
         return;
     }
     void InstructionDecoder_power::FLM()
@@ -945,7 +945,7 @@ using namespace boost::assign;
     }
      void InstructionDecoder_power::WC()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<9, 10>(insn))), true);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<9, 10>(insn))), true, false);
         return;
     }
    
