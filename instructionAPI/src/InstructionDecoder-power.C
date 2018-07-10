@@ -929,12 +929,12 @@ using namespace boost::assign;
     }
     void InstructionDecoder_power::NB()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn))), true, false);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn))), true);
         return;
     }
     void InstructionDecoder_power::U()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn) >> 1)), true, false);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<16, 20>(insn) >> 1)), true);
         return;
     }
     void InstructionDecoder_power::FLM()
@@ -945,7 +945,7 @@ using namespace boost::assign;
     }
      void InstructionDecoder_power::WC()
     {
-        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<9, 10>(insn))), true, false);
+        insn_in_progress->appendOperand(Immediate::makeImmediate(Result(u8, field<9, 10>(insn))), true);
         return;
     }
    
