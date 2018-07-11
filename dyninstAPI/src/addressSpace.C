@@ -1717,7 +1717,7 @@ bool AddressSpace::relocate() {
        iter != modifiedFunctions_.end(); ++iter) {
      FuncSet &modFuncs = iter->second;
    for (auto myFuncAddr : modFuncs){
-      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->getPtrAddress() << std::endl;
+      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->get_address() << std::endl;
     }
     std::cerr << "End of relocation Printing\n";
 
@@ -1743,6 +1743,12 @@ bool AddressSpace::relocate() {
         }
      } while (repeat);
      
+     // std::map<uint64_t, func_instance *> _findPower8Overlaps;
+     // for (auto i : modFuncs) {
+     //    _findPower8Overlaps[i->entryBlock()->]
+     // }
+
+
      addModifiedRegion(iter->first);
      
      Address middle = (iter->first->codeAbs() + (iter->first->imageSize() / 2));
