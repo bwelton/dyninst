@@ -752,8 +752,8 @@ Parser::record_func(Function *f) {
     //     startAddressMap[f.addr()] = f;
     //     sorted_funcs.insert()
     // }
-
     sorted_funcs.insert(f);
+    _parse_data->record_func(f);
 //    fprintf(stderr, "Recoding function - %s\n", f->name().c_str());
     
 }
