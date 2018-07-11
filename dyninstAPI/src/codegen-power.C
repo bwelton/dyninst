@@ -413,7 +413,7 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
     // Find the func instance
     func_instance * func = curAddressSpace->findOneFuncByAddr(from);
 
-    point = Dyninst::PatchAPI::Point::funcEntry(func);
+    point = Point::funcEntry(func);
     if (point->addr_compat() != from)
       return NULL;
     return point; 
