@@ -465,7 +465,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
     // TODO: Fix this, this should work....
     //= gen.rs()->getScratchRegister(gen);
     if (scratch == REG_NULL) {
-        instPoint *point = gen.point();
+        instPoint *point = GetInstPointPower(gen, from);//gen.point();
         if (!point) {
           // No clue if CTR or LR are filled, use broken trap and likely fail.
             fprintf(stderr, "%s\n", "Couldn't grab points - Using a trap instruction.....");
