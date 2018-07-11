@@ -1717,7 +1717,7 @@ bool AddressSpace::relocate() {
        iter != modifiedFunctions_.end(); ++iter) {
      FuncSet &modFuncs = iter->second;
    for (auto myFuncAddr : modFuncs){
-      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->entryBlock->GetBlockStartingAddress() << std::endl;
+      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->entryBlock()->GetBlockStartingAddress() << std::endl;
     }
     std::cerr << "End of relocation Printing\n";
 
