@@ -408,7 +408,7 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
     // Take the hardest road....
 
     // Grab the function instance from addressSpace.
-    addressSpace * curAddressSpace = gen.addrSpace();
+    AddressSpace * curAddressSpace = gen.addrSpace();
 
     // Find the func instance
     func_instance * func = curAddressSpace->findOneFuncByAddr(from);
