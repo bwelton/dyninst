@@ -396,7 +396,7 @@ bool insnCodeGen::generateBranchCTR(codeGen &gen,
 
 
 
-
+#include "addressSpace.h"
 void insnCodeGen::generateLongBranch(codeGen &gen, 
                                      Address from, 
                                      Address to, 
