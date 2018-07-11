@@ -418,9 +418,14 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
     for (auto i :  funcList)
     {
       point = instPoint::funcEntry(i);
-      if (point != NULL)
-        if (point->addr_compat() == from)
+      if (point != NULL){
+        if (point->addr_compat() == from){
           return point;
+        }
+        else {
+          fprintf(stderr, "Could not find function with expected Address: %p %p\n",  from, point->addr_compat());
+        }
+      }
     }
     fprintf(stderr, "Could not find function with expected Address: %p\n",  from);
     return NULL;
