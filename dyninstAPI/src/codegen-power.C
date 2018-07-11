@@ -486,8 +486,8 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         instPoint *point = GetInstPointPower(gen, from);//gen.point();
         if (!point) {
           // No clue if CTR or LR are filled, use broken trap and likely fail.
-            fprintf(stderr, "%s\n", "Couldn't grab points - Using a trap instruction.....");
-            return generateBranchViaTrap(gen, from, to, isCall);
+            //fprintf(stderr, "%s\n", "Couldn't grab points - Using a trap instruction.....");
+            return NULL;//generateBranchViaTrap(gen, from, to, isCall);
         }
         // Grab the register space, and see if LR or CTR are free.
         // What we are going to do here is use the LR/CTR as temporary store for an existing register value
