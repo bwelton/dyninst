@@ -90,7 +90,7 @@ class Parser {
     vector<Function *> discover_funcs;
 
     set<Function*,Function::less> sorted_funcs;
-
+    std::map<uint64_t, Function *> startAddressMap;
     // PLT, IAT entries
     dyn_hash_map<Address, string> plt_entries;
 
