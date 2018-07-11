@@ -743,7 +743,7 @@ Parser::record_func(Function *f) {
         discover_funcs.push_back(f);
 
     sorted_funcs.insert(f);
-
+    fprintf(stderr, "Recoding function - %s\n", f->name().c_str());
     _parse_data->record_func(f);
 }
 
