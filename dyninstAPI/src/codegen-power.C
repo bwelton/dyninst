@@ -414,8 +414,10 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
     func_instance * func = curAddressSpace->findOneFuncByAddr(from);
 
     point = instPoint::funcEntry(func);
-    if (point->addr_compat() != from)
+    if (point->addr_compat() != from){
+      fprintf(stderr, "Point address compact: %p, Expected Address: %p\n", point->addr_compat(), from);
       return NULL;
+    }
     return point; 
 }
 void insnCodeGen::generateLongBranch(codeGen &gen, 
