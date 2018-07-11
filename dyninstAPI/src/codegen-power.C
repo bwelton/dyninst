@@ -420,15 +420,15 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
       point = instPoint::funcEntry(i);
       if (point != NULL){
         if (point->addr_compat() == from){
-          fprintf(stderr, "%p %s\n", from, "Found ");
+          //fprintf(stderr, "%p %s\n", from, "Found ");
           return point;
         }
         else {
-          fprintf(stderr, "Could not find function with expected Address: %p %p\n",  from, point->addr_compat());
+          //fprintf(stderr, "Could not find function with expected Address: %p %p\n",  from, point->addr_compat());
         }
       }
     }
-    fprintf(stderr, "Could not find function with expected Address: %p\n",  from);
+    //fprintf(stderr, "Could not find function with expected Address: %p\n",  from);
     return NULL;
     // point = instPoint::funcEntry(func);
     // if (point->addr_compat() != from){
@@ -487,15 +487,15 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
         instPoint *point = GetInstPointPower(gen, from);//gen.point();
         if (!point) {
           // No clue if CTR or LR are filled, use broken trap and likely fail.
-            //fprintf(stderr, "%s\n", "Couldn't grab points - Using a trap instruction.....");
-            return;//generateBranchViaTrap(gen, from, to, isCall);
+            fprintf(stderr, "%s\n", "Couldn't grab point - Using a trap instruction.....");
+            return generateBranchViaTrap(gen, from, to, isCall);
         }
         // Grab the register space, and see if LR or CTR are free.
         // What we are going to do here is use the LR/CTR as temporary store for an existing register value
         std::vector<Register> potentialRegisters = {registerSpace::r3, registerSpace::r4, registerSpace::r5, registerSpace::r6, registerSpace::r7, registerSpace::r8, registerSpace::r9, registerSpace::r10};
         bitArray liveRegs = point->liveRegisters();
 
-        for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1){
+        for (int iter =  potentialRegisters.size() - 1; iter >= 0; iter = iter - 1) {
           if (liveRegs[potentialRegisters[iter]] == false) {
             scratch = potentialRegisters[iter]; 
             break;
