@@ -1748,9 +1748,11 @@ bool AddressSpace::relocate() {
      for (auto i : modFuncs) {
         _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
      }
-     for (auto i : _findPower8Overlaps) {
-        if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
-          modFuncs.erase(std::remove(modFuncs.begin(), modFuncs.end(), i.second), modFuncs.end());
+     FuncSet temporary = modFuncs;
+     modFuncs.clear();
+     for (auto i : temporary) {
+          if (_findPower8Overlaps.find(i->entryBlock()->GetBlockStartingAddress()+0x8) == _findPower8Overlaps.end())
+            modFuncs.push_back(i);
      }
 
      addModifiedRegion(iter->first);
