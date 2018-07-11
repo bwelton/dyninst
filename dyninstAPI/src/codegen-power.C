@@ -397,6 +397,27 @@ bool insnCodeGen::generateBranchCTR(codeGen &gen,
 
 
 #include "addressSpace.h"
+#include "instPoint.h"
+#include "function.h"
+instPoint * GetInstPointPower(codeGen & gen, Address from) {
+    // If this point is straight availible from the generator, return it
+    instPoint *point = gen.point();
+    if (point) 
+      return point;
+
+    // Take the hardest road....
+
+    // Grab the function instance from addressSpace.
+    addressSpace * curAddressSpace = gen.addrSpace();
+
+    // Find the func instance
+    func_instance * func = curAddressSpace->findOneFuncByAddr(from);
+
+    point = Dyninst::PatchAPI::Point::funcEntry(func);
+    if (point->addr_compat() != from)
+      return NULL;
+    return point; 
+}
 void insnCodeGen::generateLongBranch(codeGen &gen, 
                                      Address from, 
                                      Address to, 
