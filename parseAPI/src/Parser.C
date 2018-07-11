@@ -742,17 +742,18 @@ Parser::record_func(Function *f) {
     else
         discover_funcs.push_back(f);
 
-    if (startAddressMap.find(f->addr() + 0x8) != startAddressMap.end()) {
-        startAddressMap[f->addr()] = f;
-    } else if (startAddressMap.find(f->addr() - 0x8) != startAddressMap.end()) {
-        sorted_funcs.erase(startAddressMap[f->addr() - 0x8]);
-        sorted_funcs.insert(f);
-        startAddressMap[f->addr()] = f;        
-    } else {
-        startAddressMap[f->addr()] = f;
-        sorted_funcs.insert(f);
-    }
-    //sorted_funcs.insert(f);
+    // if (startAddressMap.find(f.addr() + 0x8) != startAddressMap.end()) {
+    //     startAddressMap[f.addr()] = f;
+    // } else if (startAddressMap.find(f.addr() - 0x8) != startAddressMap.end()) {
+    //     sorted_funcs.erase(startAddressMap[f.addr() - 0x8]);
+    //     sorted_funcs.insert(f);
+    //     startAddressMap[f.addr()] = f;        
+    // } else {
+    //     startAddressMap[f.addr()] = f;
+    //     sorted_funcs.insert()
+    // }
+
+    sorted_funcs.insert(f);
 //    fprintf(stderr, "Recoding function - %s\n", f->name().c_str());
     
 }
