@@ -411,14 +411,25 @@ instPoint * GetInstPointPower(codeGen & gen, Address from) {
     AddressSpace * curAddressSpace = gen.addrSpace();
 
     // Find the func instance
-    func_instance * func = curAddressSpace->findOneFuncByAddr(from);
+    func_instance * func;
+    std::set<func_instance *> funcList;
+    curAddressSpace->findFuncsByAddr(from, funcList);
 
-    point = instPoint::funcEntry(func);
-    if (point->addr_compat() != from){
-      fprintf(stderr, "Point address compact: %p, Expected Address: %p\n", point->addr_compat(), from);
-      return NULL;
+    for (auto i :  funcList)
+    {
+      point = instPoint::funcEntry(i);
+      if (point != NULL)
+        if (point->addr_compat() == from)
+          return point;
     }
-    return point; 
+    fprintf(stderr, "Could not find function with expected Address: %p\n",  from);
+    return NULL;
+    // point = instPoint::funcEntry(func);
+    // if (point->addr_compat() != from){
+    //   fprintf(stderr, "Point address compact: %p, Expected Address: %p\n", point->addr_compat(), from);
+    //   return NULL;
+    // }
+    //return point; 
 }
 void insnCodeGen::generateLongBranch(codeGen &gen, 
                                      Address from, 
