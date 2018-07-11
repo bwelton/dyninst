@@ -123,6 +123,7 @@ class block_instance : public Dyninst::PatchAPI::PatchBlock {
     bool isFuncExit() const;
     // static void destroy(block_instance *b); // doesn't need to do anything
 
+    Address GetBlockStartingAddress();
     virtual void markModified();
 
  private:

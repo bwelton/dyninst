@@ -103,6 +103,10 @@ int block_instance::id() const {
   return llb()->id();
 }
 
+Address block_instance::GetBlockStartingAddress() {
+  return llb()->firstInsnOffset();
+}
+
 using namespace Dyninst::Relocation;
 void block_instance::triggerModified() {
     // KEVINTODO: implement this: remove block from Relocation info caching...
