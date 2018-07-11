@@ -1701,7 +1701,7 @@ using namespace Relocation;
 bool AddressSpace::delayRelocation() const {
    return delayRelocation_;
 }
-
+#include <algorithm>
 bool AddressSpace::relocate() {
    if (delayRelocation()) return true;
    
@@ -1743,11 +1743,15 @@ bool AddressSpace::relocate() {
         }
      } while (repeat);
      
-     // std::map<uint64_t, func_instance *> _findPower8Overlaps;
-     // for (auto i : modFuncs) {
-     //    _findPower8Overlaps[i->entryBlock()->]
-     // }
-
+     // Fix for power 8 to remove preamble functions.
+     std::map<uint64_t, func_instance *> _findPower8Overlaps;
+     for (auto i : modFuncs) {
+        _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
+     }
+     for (auto i : _findPower8Overlaps) {
+        if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
+          modFuncs.erase(std::remove(modFuncs.begin(), modFuncs.end(), i.second), modFuncs.end());
+     }
 
      addModifiedRegion(iter->first);
      
