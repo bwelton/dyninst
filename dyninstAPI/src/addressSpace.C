@@ -1716,10 +1716,6 @@ bool AddressSpace::relocate() {
   for (std::map<mapped_object *, FuncSet>::iterator iter = modifiedFunctions_.begin();
        iter != modifiedFunctions_.end(); ++iter) {
      FuncSet &modFuncs = iter->second;
-   for (auto myFuncAddr : modFuncs){
-      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->entryBlock()->GetBlockStartingAddress() << std::endl;
-    }
-    std::cerr << "End of relocation Printing\n";
 
      bool repeat = false;
 
@@ -1752,6 +1748,10 @@ bool AddressSpace::relocate() {
         if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
           modFuncs.erase(i.second);
      }
+   for (auto myFuncAddr : modFuncs){
+      std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->entryBlock()->GetBlockStartingAddress() << std::endl;
+    }
+    std::cerr << "End of relocation Printing\n";
 
      addModifiedRegion(iter->first);
      
