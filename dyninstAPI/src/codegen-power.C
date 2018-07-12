@@ -502,7 +502,7 @@ void insnCodeGen::generateLongBranch(codeGen &gen,
           }
         }
         if (scratch == REG_NULL) {
-          if (liveRegs[registerSpace::lr] == false) {
+          if (liveRegs[registerSpace::lr] == false && isCall) {
               usingLR = true;
               // Register 11 is the chosen one for using temporarily.
               generateMoveToSPR(gen, registerSpace::r10, SPR_LR);
