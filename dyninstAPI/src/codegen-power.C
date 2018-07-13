@@ -133,7 +133,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   // if (_global_stack_track.get() == NULL)
   //   _global_stack_track.reset(new TrackStacktraces());
   // _global_stack_track->Insert(ss.str());
-  if (gen.currAddr() == 0xE5F888C) {
+  if (gen.currAddr() == 0xe5f88d4) {
     fprintf(stderr, "%s\n", "Hello!, whats next???? " );
     fprintf(stderr, "%08x\n", insn.asInt());
   }
