@@ -138,7 +138,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
     fprintf(stderr, "%08x\n", insn.asInt());
   }
   unsigned raw = insn.asInt();
-  fprintf(stderr, "Instruction Written: %08x\n", insn.asInt());
+  fprintf(stderr, "Instruction Written: %08x at position: %16x\n", insn.asInt(), gen.currAddr());
   //fprintf(stderr, "Raw Written value %u\n", raw);
   gen.copy(&raw, sizeof(unsigned));
 }
