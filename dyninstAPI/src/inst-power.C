@@ -1504,7 +1504,7 @@ Register EmitterPOWER::emitCall(opCode ocode,
         // Try to allocate the correct parameter register
         if (gen.rs()->allocateSpecificRegister(gen, registerSpace::r3 + u, true))
             reg = registerSpace::r3 + u;
-         fprintf(stderr, "info: %s:%d: Register: %d \n", __FILE__, __LINE__, reg->number); 
+             fprintf(stderr, "info: %s:%d: Register: %d \n", __FILE__, __LINE__, reg); 
 	Address unused = ADDR_NULL;
 	if (!operands[u]->generateCode_phase2( gen, false, unused, reg)) assert(0);
 	assert(reg != REG_NULL);
