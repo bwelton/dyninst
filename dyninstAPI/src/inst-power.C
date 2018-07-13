@@ -1383,6 +1383,8 @@ Register EmitterPOWER::emitCall(opCode ocode,
     //fprintf(stderr, "[EmitterPOWER::emitCall] making call to: %llx\n", callee-> );
     // If inInstrumentation is true we're in instrumentation;
     // if false we're in function call replacement
+
+    fprintf(stderr, "%s\n", "In emit call");
     if (ocode == funcJumpOp)
 	return emitCallReplacement(ocode, gen, noCost, callee);
 
@@ -1578,7 +1580,6 @@ Register EmitterPOWER::emitCall(opCode ocode,
     }
     
     emitCallInstruction(gen, callee, setTOC, toc_anchor);
-    
     // ALL instrumentation
     Register retReg = REG_NULL;
     if (inInstrumentation) {
