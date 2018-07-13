@@ -133,7 +133,9 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   // if (_global_stack_track.get() == NULL)
   //   _global_stack_track.reset(new TrackStacktraces());
   // _global_stack_track->Insert(ss.str());
-  assert(gen.currAddr() != 0xe5f88e0);
+  if (gen.currAddr() == 0xe5f88e0) {
+    fprintf(stderr, "%s\n", "Hello!, whats next???? " );
+  }
   unsigned raw = insn.asInt();
   //fprintf(stderr, "Raw Written value %u\n", raw);
   gen.copy(&raw, sizeof(unsigned));
