@@ -95,7 +95,7 @@ bool CodeMover::addFunctions(FuncSet::const_iterator begin,
 template <typename RelocBlockIter>
 bool CodeMover::addRelocBlocks(RelocBlockIter begin, RelocBlockIter end, func_instance *f) {
    for (; begin != end; ++begin) {
-      std::cerr << "[CodeMover::addRelocBlocks] Adding block to relocate at address - " << std::hex << (*begin)->GetBlockStartingAddress() << std::endl;
+      std::cerr << "[CodeMover::addRelocBlocks] Adding block to relocate at address - " << std::hex << (*begin)->format() << std::endl;
      addRelocBlock(SCAST_BI(*begin), f);
    }
    return true;
