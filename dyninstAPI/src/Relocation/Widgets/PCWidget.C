@@ -89,7 +89,11 @@ bool PCWidget::PCtoReturnAddr(const codeGen &templ, const RelocBlock *t, CodeBuf
 #else
     // We want to get a value into LR, which is the return address.
     // Fun for the whole family... we need a spare register. Argh!
-
+    if (insn()->writesMemory() == false){
+      // This branching instruction does not write LR, so we are good... 
+      std::cerr << "[PCWidget::PCtoReturnAddr] Instruction - " << insn()->format() << " at address " << std::hex << addr() << " is non-returning" << std::endl;
+      return true;
+    }
     codeGen gen(16);
     gen.applyTemplate(templ);
     // Must be in LR
