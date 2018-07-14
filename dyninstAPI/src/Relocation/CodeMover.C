@@ -77,7 +77,7 @@ bool CodeMover::addFunctions(FuncSet::const_iterator begin,
 	relocation_cerr << "\tFunction " << func->symTabName() << " is non-instrumentable, skipping" << endl;
          continue;
       }
-      relocation_cerr << "\tAdding function " << func->symTabName() << endl;  
+      std::cerr << "[CodeMover::addFunctions] \tAdding function " << func->symTabName() << endl;  
       //if (!addRelocBlocks(func->blocks().begin(), func->blocks().end(), func)) {
       if (!addRelocBlocks(func->blocks().begin(), func->blocks().end(), func)) {
          return false;
@@ -95,6 +95,7 @@ bool CodeMover::addFunctions(FuncSet::const_iterator begin,
 template <typename RelocBlockIter>
 bool CodeMover::addRelocBlocks(RelocBlockIter begin, RelocBlockIter end, func_instance *f) {
    for (; begin != end; ++begin) {
+      std::cerr << "[CodeMover::addRelocBlocks] Adding block to relocate at address - " << std::hex << begin->GetBlockStartingAddress() << std::endl;
      addRelocBlock(SCAST_BI(*begin), f);
    }
    return true;
