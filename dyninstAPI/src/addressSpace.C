@@ -1756,8 +1756,8 @@ bool AddressSpace::relocate() {
           // If these three instructions appear in order, then we have a preamble we should NOT be relocated and for now
           // will also not be instrimented...
           std::vector<std::string> retString;
-          if (i.second != NULL) {
-            i.second->GetBlockInstructions(retString);
+          if (i.second->entryBlock() != NULL) {
+            i.second->entryBlock()->GetBlockInstructions(retString);
             if (retString.size() < 3)
               continue;
             if (retString[0].find("lis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos && retString[2].find("mfspr R0, LR") != std::string::npos){
