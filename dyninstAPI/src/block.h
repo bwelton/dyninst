@@ -115,7 +115,7 @@ class block_instance : public Dyninst::PatchAPI::PatchBlock {
     std::string calleeName();
 
     int id() const;
-    void GetBlockInstructions(std::vector<std::string> & ret){llb()->GetBlockInstructions(ret); return;;
+    void GetBlockInstructions(std::vector<std::string> & ret){llb()->GetBlockInstructions(ret); return;};
 
     // Functions to avoid
     // These are convinence wrappers for really expensive
