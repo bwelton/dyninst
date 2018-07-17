@@ -1745,6 +1745,7 @@ bool AddressSpace::relocate() {
         _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
      }
      for (auto i : _findPower8Overlaps) {
+        std::cerr << "[AddressSpace::Relocate] Starting Address " << std::hex << i.first << std::endl;
         if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
           modFuncs.erase(i.second);
      }
