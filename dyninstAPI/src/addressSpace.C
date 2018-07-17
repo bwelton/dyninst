@@ -1743,7 +1743,7 @@ bool AddressSpace::relocate() {
      std::map<uint64_t, func_instance *> _findPower8Overlaps;
      for (auto i : modFuncs) {
         if (_findPower8Overlaps.find(i->entryBlock()->GetBlockStartingAddress()) != _findPower8Overlaps.end())
-          std::cerr << "What? We have two functions with the same entry point.... "
+          std::cerr << "What? We have two functions with the same entry point...." << i->name() << "," << i->name() << " at address - " << std::hex << i->entryBlock()->GetBlockStartingAddress() << std::dec << std::endl;
         _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
      }
      for (auto i : _findPower8Overlaps) {
