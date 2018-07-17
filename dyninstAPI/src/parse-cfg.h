@@ -136,6 +136,7 @@ class parse_block : public codeRange, public ParseAPI::Block  {
     // address; we do this to avoid a copy when getting Insns from block_instances
     void getInsns(Insns &instances, Address offset = 0);
 
+    void GetBlockInstructions(std::vector<std::string> & ret);
  private:
     bool needsRelocation_;
     int blockNumber_;

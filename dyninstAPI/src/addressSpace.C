@@ -1742,12 +1742,32 @@ bool AddressSpace::relocate() {
      // Fix for power 8 to remove preamble functions.
      std::map<uint64_t, func_instance *> _findPower8Overlaps;
      for (auto i : modFuncs) {
+        if (_findPower8Overlaps.find(i->entryBlock()->GetBlockStartingAddress()) != _findPower8Overlaps.end())
+          std::cerr << "What? We have two functions with the same entry point.... "
         _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
      }
      for (auto i : _findPower8Overlaps) {
-        std::cerr << "[AddressSpace::Relocate] Starting Address " << std::hex << i.first << std::dec << " Name = " << i.second->name() << std::endl;
+        //std::cerr << "[AddressSpace::Relocate] Starting Address " << std::hex << i.first << std::dec << " Name = " << i.second->name() << std::endl;
         if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
           modFuncs.erase(i.second);
+        // Some crazy heuristic games.... 
+        else {
+          // In this case, we are looking for the first three instructions of the basic block being LS, ADDI, and MFLR. 
+          // If these three instructions appear in order, then we have a preamble we should NOT be relocated and for now
+          // will also not be instrimented...
+          std::vector<std::string> retString;
+          if (i.second != NULL) {
+            i.second->GetBlockInstructions(retString);
+            if (retString.size() < 3)
+              continue;
+            if (retString[0].find("lis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos && retString[2].find("mfspr R0, LR") != std::string::npos){
+              std::cerr << "[AddressSpace::Relocate] Excluding the function - " << i.second->name() << " because it matches a preamble for function entry on POWER\n" << std::endl;
+              for (auto n : retString)
+                std::cerr << "[AddressSpace::Relocate]\t Instruction: " << n << std::endl;
+              modFuncs.erase(i.second);
+            }
+          }
+        }
      }
    for (auto myFuncAddr : modFuncs){
       std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << myFuncAddr->entryBlock()->GetBlockStartingAddress() << std::endl;

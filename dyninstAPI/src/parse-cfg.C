@@ -530,6 +530,15 @@ parse_func *parse_block::getCallee() {
    return NULL;
 }
 
+
+void parse_block::GetBlockInstructions(std::vector<std::string> & ret) {
+  Insns tmp;
+  getInsns(tmp, 0);
+  for (auto i : tmp) {
+    ret.push_back(i.second->format());
+  }
+  return;
+}
 std::pair<bool, Address> parse_block::callTarget() {
    using namespace InstructionAPI;
    Offset off = lastInsnOffset();
@@ -552,6 +561,8 @@ std::pair<bool, Address> parse_block::callTarget() {
    }
    return std::make_pair(false, 0);
 }
+
+
 
 bool parse_func::hasUnresolvedCF() {
    if (unresolvedCF_ == UNSET_CF) {
