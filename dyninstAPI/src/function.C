@@ -63,6 +63,7 @@ func_instance::func_instance(parse_func *f,
   mod_(mod),
   prevBlocksAbruptEnds_(0),
   handlerFaultAddr_(0),
+  _powerPreamble(false),
   handlerFaultAddrAddr_(0)
 #if defined(os_windows)
   , callingConv(unknown_call)
@@ -112,7 +113,8 @@ func_instance::func_instance(const func_instance *parFunc,
   mod_(childMod),
   prevBlocksAbruptEnds_(0),
   handlerFaultAddr_(0),
-  handlerFaultAddrAddr_(0)
+  handlerFaultAddrAddr_(0),
+  _powerPreamble(false),
 #if defined(os_windows)
   , callingConv(parFunc->callingConv)
   , paramSize(parFunc->paramSize)

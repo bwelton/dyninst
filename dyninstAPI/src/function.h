@@ -100,6 +100,8 @@ class func_instance : public patchTarget, public Dyninst::PatchAPI::PatchFunctio
   // this function) we make most methods passthroughs to the original
   // parsed version.
 
+
+  bool _powerPreamble;
   string symTabName() const { return ifunc()->symTabName(); };
   string prettyName() const { return ifunc()->prettyName(); };
   string typedName() const { return ifunc()->typedName(); };
