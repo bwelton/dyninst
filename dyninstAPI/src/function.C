@@ -114,7 +114,7 @@ func_instance::func_instance(const func_instance *parFunc,
   prevBlocksAbruptEnds_(0),
   handlerFaultAddr_(0),
   handlerFaultAddrAddr_(0),
-  _powerPreamble(false),
+  _powerPreamble(false)
 #if defined(os_windows)
   , callingConv(parFunc->callingConv)
   , paramSize(parFunc->paramSize)
