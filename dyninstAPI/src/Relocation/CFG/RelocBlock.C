@@ -89,6 +89,9 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
     // Skip moving the power preamble...
     if (func->_powerPreamble && count < 2) {
       count++;
+          relocation_cerr << "  Skipping instruction @" 
+        << std::hex << iter->first << std::dec
+        << ": " << iter->second->format(iter->first) << endl;
       continue;
     }
     relocation_cerr << "  Adding instruction @" 
