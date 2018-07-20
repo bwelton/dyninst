@@ -113,7 +113,7 @@ class block_instance : public Dyninst::PatchAPI::PatchBlock {
 
     func_instance *callee();
     std::string calleeName();
-
+    bool _powerPreamble;
     int id() const;
     void GetBlockInstructions(std::vector<std::string> & ret){llb()->GetBlockInstructions(ret); return;};
 

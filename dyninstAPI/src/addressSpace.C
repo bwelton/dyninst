@@ -1736,8 +1736,10 @@ bool AddressSpace::relocate() {
     // Check for power preamble in all functions in the iterator
     std::map<uint64_t, func_instance *> _findPower8Overlaps;
     for (auto funct : modFuncs) {
-      if(CheckForPowerPreamble(funct->entryBlock()))
+      if(CheckForPowerPreamble(funct->entryBlock())){
           funct->_powerPreamble = true;
+          funct->entryBlock()->_powerPreamble = true;
+      }
       _findPower8Overlaps[funct->entryBlock()->GetBlockStartingAddress()] = funct;
     }
 

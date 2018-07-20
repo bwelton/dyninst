@@ -73,8 +73,9 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
 
   relocation_cerr << "Creating new RelocBlock" << endl;
   RelocBlock *newRelocBlock;
-  if (func->_powerPreamble && block == func->entryBlock())
+  if (block->_powerPreamble){
     newRelocBlock = new RelocBlock(block->start() + 0x8, block, func);
+  }
   else {
     newRelocBlock = new RelocBlock(block, func);
   }
@@ -87,7 +88,7 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
   for (block_instance::Insns::iterator iter = insns.begin();
        iter != insns.end(); ++iter) {
     // Skip moving the power preamble...
-    if (func->_powerPreamble && count < 2) {
+    if (block->_powerPreamble && count < 2) {
       count++;
           relocation_cerr << "  Skipping instruction @" 
         << std::hex << iter->first << std::dec
