@@ -1739,6 +1739,9 @@ bool AddressSpace::relocate() {
       if(CheckForPowerPreamble(funct->entryBlock())){
           funct->_powerPreamble = true;
           funct->entryBlock()->_powerPreamble = true;
+      } else {
+                  funct->_powerPreamble = false;
+          funct->entryBlock()->_powerPreamble = false;
       }
       _findPower8Overlaps[funct->entryBlock()->GetBlockStartingAddress()] = funct;
     }
