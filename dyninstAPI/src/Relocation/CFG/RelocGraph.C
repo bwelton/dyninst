@@ -114,7 +114,7 @@ void RelocGraph::PrintSpringboardMap() {
       // typedef std::map<std::pair<block_instance *, func_instance *>,
       // RelocBlock *> Map;
    for (auto i : springboards) {
-      std::cerr << "[RelocGraph::PrintSpringboardMap]\t Relocating " << i.first.second->name() << " with block at addr " << std::hex << i.first.second->GetBlockStartingAddress() 
+      std::cerr << "[RelocGraph::PrintSpringboardMap]\t Relocating " << i.first.second->name() << " with block at addr " << std::hex << i.first.first->GetBlockStartingAddress() 
                 << " to RelocBlock with Original Address " << std::hex << i.second->origAddr() << " paired with original block " << std::hex <<i.second->block()->GetBlockStartingAddress() << std::endl;
    }
 }
