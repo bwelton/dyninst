@@ -224,21 +224,32 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          block_instance *bbl = iter->first.first;
          const Priority &p = iter->second;
          func_instance *func = iter->first.second;
-
+         RelocBlock * trace = NULL;
          if (bbl->wasUserAdded()) continue;
          if (bbl->_powerPreamble) {
             cfg_->PrintSpringboardMap();
+            trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
+            if (!trace) continue;
+            relocation_cerr << "Func " << func->symTabName() << " / block " 
+                           << hex << bbl->start() << " /w/ (in preamble) priority " << p 
+                           << dec << endl;
+             int labelID = trace->getLabel();
+             Address to = buffer_.getLabelAddr(labelID);
+            sboardMap_.addFromOrigCode(bbl->start()+0x8, to, p, func, bbl);
+         } else {
+            // the priority map may include things not in the block
+            // map...
+            trace = cfg_->findSpringboard(bbl, func);
+            if (!trace) continue;
+            relocation_cerr << "Func " << func->symTabName() << " / block " 
+                            << hex << bbl->start() << " /w/ priority " << p 
+                            << dec << endl;
+             int labelID = trace->getLabel();
+             Address to = buffer_.getLabelAddr(labelID);           
+             sboardMap_.addFromOrigCode(bbl->start(), to, p, func, bbl);
          }
-         // the priority map may include things not in the block
-         // map...
-         RelocBlock * trace = cfg_->findSpringboard(bbl, func);
-         if (!trace) continue;
-         int labelID = trace->getLabel();
-         Address to = buffer_.getLabelAddr(labelID);
-         
-         sboardMap_.addFromOrigCode(bbl->start(), to, p, func, bbl);
       }
-      
+
       // And instrumentation that needs updating
       //createInstrumentationSpringboards(as);
    }
