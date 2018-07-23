@@ -231,8 +231,8 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
             trace = cfg_->findSpringboard(bbl, func);
             
             if (!trace) {
-               trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
-               if(!trace)
+               // trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
+               // if(!trace)
                   continue;
             }
             relocation_cerr << "Func " << func->symTabName() << " / block " 

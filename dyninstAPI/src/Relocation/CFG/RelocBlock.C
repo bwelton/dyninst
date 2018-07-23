@@ -74,7 +74,7 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
   relocation_cerr << "Creating new RelocBlock" << endl;
   RelocBlock *newRelocBlock;
   if (block->_powerPreamble){
-    newRelocBlock = new RelocBlock(block->start() + 0x8, block, func);
+    newRelocBlock = new RelocBlock(block->start() + 0x8, block, func, true);
   }
   else {
     newRelocBlock = new RelocBlock(block, func);
