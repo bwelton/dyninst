@@ -1712,8 +1712,9 @@ bool CheckForPowerPreamble(block_instance * entryBlock) {
       return false;
     // Power Preambles
     if ((retString[0].find("lis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos) ||
-        (retString[0].find("addis") != std::string::npos && retString[1].find("addi R2") != std::string::npos)) {}
+        (retString[0].find("addis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos)) {
       return true; 
+    }
     return false;
 }
 
