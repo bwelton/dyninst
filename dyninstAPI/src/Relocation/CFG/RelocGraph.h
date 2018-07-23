@@ -77,7 +77,7 @@ class RelocGraph {
    bool removeEdge(RelocEdge *);
    void removeSource(RelocEdge *);
    void removeTarget(RelocEdge *);
-   RelocBlock * FindByAddress(Address addr);
+   RelocBlock * FindByAddress(Address addr) const;
    RelocBlock *head;
    RelocBlock *tail;
    unsigned size;
