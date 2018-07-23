@@ -227,17 +227,17 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
 
          if (bbl->wasUserAdded()) continue;
 
+    relocation_cerr << "Func " << func->symTabName() << " / block " 
+          << hex << bbl->start() << " /w/ priority " << p 
+          << dec << endl;
+
          // the priority map may include things not in the block
          // map...
          RelocBlock * trace = cfg_->findSpringboard(bbl, func);
          if (!trace) continue;
          int labelID = trace->getLabel();
          Address to = buffer_.getLabelAddr(labelID);
-
-    relocation_cerr << "Func " << func->symTabName() << " / block " 
-          << hex << bbl->start() << " /w/ priority " << p 
-          << dec << endl;
-
+         
          sboardMap_.addFromOrigCode(bbl->start(), to, p, func, bbl);
       }
       
