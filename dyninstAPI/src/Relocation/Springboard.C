@@ -252,7 +252,7 @@ bool InstalledSpringboards::addBlocks(func_instance* func, BlockIter begin, Bloc
 
 SpringboardBuilder::generateResult_t 
 SpringboardBuilder::generateSpringboard(std::list<codeGen> &springboards,
-					const SpringboardReq &r,
+					                              const SpringboardReq &r,
                                         SpringboardMap &input) {
    codeGen gen;
    bool usedTrap = false;
@@ -286,6 +286,7 @@ SpringboardBuilder::generateSpringboard(std::list<codeGen> &springboards,
 
 bool SpringboardBuilder::generateMultiSpringboard(std::list<codeGen> &,
 						  const SpringboardReq &) {
+   cerr << "Request to generate multi-branch springboard skipped @ " << hex << r.from << dec << endl;
    //debugRanges();
    //if (false) cerr << "Request to generate multi-branch springboard skipped @ " << hex << r.from << dec << endl;
    // For now we give up and hope it all works out for the best. 
