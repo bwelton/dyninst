@@ -234,12 +234,12 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
                trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
                if(!trace)
                   continue;
-            };
+            }
             relocation_cerr << "Func " << func->symTabName() << " / block " 
                            << hex << bbl->start() << " /w/ (in preamble) priority " << p 
                            << dec << endl;
-             int labelID = trace->getLabel();
-             Address to = buffer_.getLabelAddr(labelID);
+            int labelID = trace->getLabel();
+            Address to = buffer_.getLabelAddr(labelID);
             sboardMap_.addFromOrigCode(bbl->start()+0x8, to, p, func, bbl);
          } else {
             // the priority map may include things not in the block
