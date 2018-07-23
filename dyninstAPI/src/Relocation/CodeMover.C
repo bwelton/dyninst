@@ -225,7 +225,7 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          const Priority &p = iter->second;
          func_instance *func = iter->first.second;
          RelocBlock * trace = NULL;
-         cfg_->PrintSpringboardMap();
+         //cfg_->PrintSpringboardMap();
          if (bbl->wasUserAdded()) continue;
          if (bbl->_powerPreamble) {
             trace = cfg_->findSpringboard(bbl, func);
