@@ -225,10 +225,6 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          const Priority &p = iter->second;
          func_instance *func = iter->first.second;
 
-	 relocation_cerr << "Func " << func->symTabName() << " / block " 
-			 << hex << bbl->start() << " /w/ priority " << p 
-			 << dec << endl;
-
          if (bbl->wasUserAdded()) continue;
 
          // the priority map may include things not in the block
@@ -237,7 +233,11 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          if (!trace) continue;
          int labelID = trace->getLabel();
          Address to = buffer_.getLabelAddr(labelID);
-         
+
+    relocation_cerr << "Func " << func->symTabName() << " / block " 
+          << hex << bbl->start() << " /w/ priority " << p 
+          << dec << endl;
+
          sboardMap_.addFromOrigCode(bbl->start(), to, p, func, bbl);
       }
       

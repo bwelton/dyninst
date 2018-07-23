@@ -73,7 +73,7 @@ bool SpringboardBuilder::generateInt(std::list<codeGen> &springboards,
    // We want to do a reverse iteration so that we don't have a situation
    // where an earlier springboard overlaps a later one.
    //
-   
+   cerr << "[SpringboardBuilder] Building Springboards with priority " << p << endl;
    for (SpringboardMap::reverse_iterator iter = input.rbegin(p); 
         iter != input.rend(p); ++iter) {
       const SpringboardReq &req = iter->second;
@@ -259,7 +259,6 @@ SpringboardBuilder::generateSpringboard(std::list<codeGen> &springboards,
    // Arbitrarily select the first function containing this springboard, since only one can win. 
    generateBranch(r.from, r.destinations.begin()->second, gen);
    unsigned size = gen.used();
-   
    if (r.useTrap || conflict(r.from, r.from + gen.used(), r.fromRelocatedCode, r.func, r.priority)) {
       // Errr...
       // Fine. Let's do the trap thing. 
