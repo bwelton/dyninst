@@ -286,7 +286,7 @@ SpringboardBuilder::generateSpringboard(std::list<codeGen> &springboards,
 
 bool SpringboardBuilder::generateMultiSpringboard(std::list<codeGen> &,
 						  const SpringboardReq &) {
-   cerr << "Request to generate multi-branch springboard skipped @ " << hex << r.from << dec << endl;
+   cerr << "Request to generate multi-branch springboard skipped!!!!" << endl;
    //debugRanges();
    //if (false) cerr << "Request to generate multi-branch springboard skipped @ " << hex << r.from << dec << endl;
    // For now we give up and hope it all works out for the best. 
