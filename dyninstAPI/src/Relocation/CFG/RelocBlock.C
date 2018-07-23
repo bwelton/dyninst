@@ -73,10 +73,11 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
 
   relocation_cerr << "Creating new RelocBlock" << endl;
   RelocBlock *newRelocBlock;
-  if (block->_powerPreamble){
+  if (block->_powerPreamble && func->name().find("main") == std::string::npos) {
     newRelocBlock = new RelocBlock(block->start() + 0x8, block, func, true);
   }
   else {
+    block->_powerPreamble = false;
     newRelocBlock = new RelocBlock(block, func);
   }
 
