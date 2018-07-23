@@ -66,7 +66,7 @@ class RelocGraph {
    RelocBlock *begin() { return head; }
    RelocBlock *end() { return NULL; }
 
-
+   void PrintSpringboardMap();
    // For initial construction
    void addRelocBlock(RelocBlock *);
    void addRelocBlockBefore(RelocBlock *cur, RelocBlock *add);

@@ -109,7 +109,16 @@ void RelocGraph::addRelocBlockAfter(RelocBlock *cur, RelocBlock *t) {
    link(cur, t);
 }
 
-   
+void RelocGraph::PrintSpringboardMap() {
+   std::cerr << "[RelocGraph::PrintSpringboardMap] Printing Relocation Springboards" << std::endl;
+      // typedef std::map<std::pair<block_instance *, func_instance *>,
+      // RelocBlock *> Map;
+   for (auto i : springboards) {
+      std::cerr << "[RelocGraph::PrintSpringboardMap]\t Relocating " << i.first.second->name() << " with block at addr " << std::hex << i.first.second->GetBlockStartingAddress() 
+                << " to RelocBlock with Original Address " << std::hex << i.second->origAddr() << " paired with original block " << std::hex <<i.second->block()->GetBlockStartingAddress() << std::endl;
+   }
+}
+
 RelocBlock *RelocGraph::find(block_instance *b, func_instance *f) const {
    InstanceMap::const_iterator iter = reloc.find(b);
    if (iter == reloc.end()) return NULL;

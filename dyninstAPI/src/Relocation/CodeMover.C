@@ -226,11 +226,9 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          func_instance *func = iter->first.second;
 
          if (bbl->wasUserAdded()) continue;
-
-    relocation_cerr << "Func " << func->symTabName() << " / block " 
-          << hex << bbl->start() << " /w/ priority " << p 
-          << dec << endl;
-
+         if (bbl->_powerPreamble) {
+            cfg_->PrintSpringboardMap();
+         }
          // the priority map may include things not in the block
          // map...
          RelocBlock * trace = cfg_->findSpringboard(bbl, func);
