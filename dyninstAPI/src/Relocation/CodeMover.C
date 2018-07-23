@@ -228,8 +228,13 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          cfg_->PrintSpringboardMap();
          if (bbl->wasUserAdded()) continue;
          if (bbl->_powerPreamble) {
-            trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
-            if (!trace) continue;
+            trace = cfg_->findSpringboard(bbl, func);
+            
+            if (!trace) {
+               trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
+               if(!trace)
+                  continue;
+            };
             relocation_cerr << "Func " << func->symTabName() << " / block " 
                            << hex << bbl->start() << " /w/ (in preamble) priority " << p 
                            << dec << endl;
