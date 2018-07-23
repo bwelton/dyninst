@@ -225,9 +225,9 @@ SpringboardMap &CodeMover::sBoardMap(AddressSpace *) {
          const Priority &p = iter->second;
          func_instance *func = iter->first.second;
          RelocBlock * trace = NULL;
+         cfg_->PrintSpringboardMap();
          if (bbl->wasUserAdded()) continue;
          if (bbl->_powerPreamble) {
-            cfg_->PrintSpringboardMap();
             trace = cfg_->FindByAddress(bbl->GetBlockStartingAddress() + 0x8);
             if (!trace) continue;
             relocation_cerr << "Func " << func->symTabName() << " / block " 
