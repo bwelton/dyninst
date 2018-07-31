@@ -88,6 +88,7 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
   int count = 0;
   for (block_instance::Insns::iterator iter = insns.begin();
        iter != insns.end(); ++iter) {
+
     // Skip moving the power preamble...
     if (block->_powerPreamble && count < 2) {
       count++;
@@ -96,6 +97,8 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
         << ": " << iter->second->format(iter->first) << endl;
       continue;
     }
+    if (iter->second->format().find("b PC, PC + 4") != std::string::npos)
+      continue;
     relocation_cerr << "  Adding instruction @" 
 		    << std::hex << iter->first << std::dec
 		    << ": " << iter->second->format(iter->first) << endl;
@@ -587,7 +590,7 @@ bool RelocBlock::finalizeCF() {
       }
       //if (debug) {
          cerr << "Adding destination /w/ index " << index << " and target " << hex << (*iter)->trg->origAddr() << dec << endl;
-      //}
+      //p}
       cfWidget_->addDestination(index, (*iter)->trg);
       (*iter)->trg->setNecessary(isNecessary((*iter)->trg, (*iter)->type));
    }
