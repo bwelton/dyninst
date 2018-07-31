@@ -585,9 +585,9 @@ bool RelocBlock::finalizeCF() {
          assert((*iter)->type == ParseAPI::INDIRECT);
          index = (*iter)->trg->origAddr();
       }
-      if (debug) {
+      //if (debug) {
          cerr << "Adding destination /w/ index " << index << " and target " << hex << (*iter)->trg->origAddr() << dec << endl;
-      }
+      //}
       cfWidget_->addDestination(index, (*iter)->trg);
       (*iter)->trg->setNecessary(isNecessary((*iter)->trg, (*iter)->type));
    }
