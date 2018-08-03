@@ -1220,6 +1220,26 @@ bool insnCodeGen::modifyJump(Address target,
   return true;
 }
 
+bool insnCodeGen::modifyJumpCall(Address target,
+           NS_power::instruction &insn,
+           codeGen &gen) {
+  failedLongBranchLocal = false;
+  shouldAssertIfInLongBranch = false;
+  //fprintf(stderr, "Setting link: %d Target Address: %p\n", IFORM_LK(insn), target);
+  //assert(IFORM_LK(insn) == true);
+  generateBranch(gen,
+     gen.currAddr(),
+     target,
+     true);
+  if (failedLongBranchLocal == true){
+    failedLongBranchLocal = false;
+    shouldAssertIfInLongBranch = true;
+    return false;
+  }
+  return true;
+}
+
+
 bool insnCodeGen::modifyJcc(Address target,
 			    NS_power::instruction &insn,
 			    codeGen &gen) {
@@ -1319,7 +1339,7 @@ bool insnCodeGen::modifyCall(Address target,
 			     codeGen &gen) {
   // This is actually a mashup of conditional/unconditional handling
   if (insn.isUncondBranch())
-    return modifyJump(target, insn, gen);
+    return modifyJumpCall(target, insn, gen);
   else
     return modifyJcc(target, insn, gen);
 }

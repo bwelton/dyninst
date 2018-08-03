@@ -141,6 +141,9 @@ class insnCodeGen {
   static bool modifyJump(Address target,
                          NS_power::instruction &insn, 
                          codeGen &gen);
+  static bool modifyJumpCall(Address target,
+                         NS_power::instruction &insn, 
+                         codeGen &gen);
   static bool modifyJcc(Address target,
                         NS_power::instruction &insn, 
                          codeGen &gen);
