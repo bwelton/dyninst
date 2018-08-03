@@ -1209,7 +1209,7 @@ bool insnCodeGen::modifyJump(Address target,
   generateBranch(gen,
 		 gen.currAddr(),
 		 target,
-		 false);
+		 IFORM_LK(insn));
   if (failedLongBranchLocal == true){
     failedLongBranchLocal = false;
     shouldAssertIfInLongBranch = true;
