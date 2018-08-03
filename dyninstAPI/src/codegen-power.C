@@ -1206,7 +1206,8 @@ bool insnCodeGen::modifyJump(Address target,
 			     codeGen &gen) {
   failedLongBranchLocal = false;
   shouldAssertIfInLongBranch = false;
-  assert(IFORM_LK(insn) == true);
+  fprintf(stderr, "Setting link: %d Target Address: %p\n", IFORM_LK(insn), target);
+  //assert(IFORM_LK(insn) == true);
   generateBranch(gen,
 		 gen.currAddr(),
 		 target,
