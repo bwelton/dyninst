@@ -1206,10 +1206,11 @@ bool insnCodeGen::modifyJump(Address target,
 			     codeGen &gen) {
   failedLongBranchLocal = false;
   shouldAssertIfInLongBranch = false;
+  assert(IFORM_LK(insn) == true);
   generateBranch(gen,
 		 gen.currAddr(),
 		 target,
-		 IFORM_LK(insn));
+		 false);
   if (failedLongBranchLocal == true){
     failedLongBranchLocal = false;
     shouldAssertIfInLongBranch = true;
