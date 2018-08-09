@@ -802,8 +802,10 @@ void pushStack(codeGen &gen)
 	insnCodeGen::generateImm(gen, STUop,
 				 REG_SP, REG_SP, -TRAMP_FRAME_SIZE_32);
     } else /* gen.width() == 8 */ {
-	insnCodeGen::generateMemAccess64(gen, STDop, STDUxop,
-                                  REG_SP, REG_SP, -TRAMP_FRAME_SIZE_64);
+        insnCodeGen::generateImm(gen, CALop,
+                                 REG_SP, REG_SP, -TRAMP_FRAME_SIZE_64);
+	// insnCodeGen::generateMemAccess64(gen, STDop, STDUxop,
+ //                                  REG_SP, REG_SP, -TRAMP_FRAME_SIZE_64);
     insnCodeGen::generateMemAccess64(gen, STDop, STDUxop,
                                   REG_SP, REG_SP, -TRAMP_FRAME_SIZE_64);
     }
