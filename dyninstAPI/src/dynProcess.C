@@ -1070,7 +1070,8 @@ bool PCProcess::detachProcess(bool cont = true) {
                 if( !continueProcess() ) {
                     proccontrol_printf("%s[%d]: failed to continue process after removing syscalls\n",
                             FILE__, __LINE__);
-                }
+                } 
+                std::cerr << "DynProcess has continued the mutatee" << std::endl;
             }
     }
 
