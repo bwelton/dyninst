@@ -316,6 +316,29 @@ void insnCodeGen::generateMoveFromSPR(codeGen &gen,  Register toSPR,
   insnCodeGen::generate(gen,moveToBr); 
 }
 
+void insnCodeGen::generateVectorLoad(codeGen &gen, unsigned vectorReg, register RegAddress) {
+  instruction loadInstruction;
+  XLFORM_OP_SET(loadInstruction, LXVD2Xop);
+  XLFORM_BT_SET(loadInstruction, vectorReg); // From architecture manual
+  XLFORM_BA_SET(loadInstruction, 0); // Unused
+  XLFORM_BB_SET(loadInstruction, RegAddress); // Unused
+  XLFORM_XO_SET(loadInstruction, LXVD2Xxo);
+  XLFORM_LK_SET(loadInstruction, 0); // Unused? 
+  insnCodeGen::generate(gen,loadInstruction);
+}
+
+void insnCodeGen::generateVectorStore(codeGen & gen, unsigned vectorReg, register RegAddress) {
+  instruction storeInstruction;
+  XLFORM_OP_SET(storeInstruction, STXVD2Xop);
+  XLFORM_BT_SET(storeInstruction, vectorReg); // From architecture manual
+  XLFORM_BA_SET(storeInstruction, 0); // Unused
+  XLFORM_BB_SET(storeInstruction, RegAddress); // Unused
+  XLFORM_XO_SET(storeInstruction, STXVD2Xxo);
+  XLFORM_LK_SET(storeInstruction, 0); // Unused? 
+  insnCodeGen::generate(gen,storeInstruction);  
+}
+
+
 bool insnCodeGen::generateBranchTar(codeGen &gen, Register scratch, 
                                     Address dest, 
                                     bool isCall) {

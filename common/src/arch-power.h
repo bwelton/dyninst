@@ -180,6 +180,19 @@ namespace NS_power {
 #define XLFORM_XO_SET(x, y) ((x).setBits( 1, 10, (y)))
 #define XLFORM_LK_SET(x, y) ((x).setBits( 0,  1, (y)))
 
+/* struct xx1form {
+	unsigned op : 6;
+	unsigned t  : 5;
+	unsigned RA : 5;
+	unsigned RB : 5; 
+	unsigned xo : 10;
+	unsigned TX/SX : 1;
+};
+*/
+
+
+
+
 //struct xfxform {
 //  unsigned op : 6;
 //  unsigned rt : 5;   // rs
@@ -584,6 +597,11 @@ typedef unsigned codeBufIndex_t;
 #define ICBIxop        982
 #define DCLZxop       1014
 
+// Vector Op Codes (XX1 Form, identical to XFORM)
+#define LXVD2Xop 	    31
+#define LXVD2Xxo	   844
+#define STXVD2Xop 		31
+#define STXVD2Xxo      972
 
 // ------------- Op Codes, instruction form XL  -----------------
 #define BCLRop		19	/* branch conditional link register */
