@@ -316,7 +316,7 @@ void insnCodeGen::generateMoveFromSPR(codeGen &gen,  Register toSPR,
   insnCodeGen::generate(gen,moveToBr); 
 }
 
-void insnCodeGen::generateVectorLoad(codeGen &gen, unsigned vectorReg, register RegAddress) {
+void insnCodeGen::generateVectorLoad(codeGen &gen, unsigned vectorReg, Register RegAddress) {
   instruction loadInstruction;
   XLFORM_OP_SET(loadInstruction, LXVD2Xop);
   XLFORM_BT_SET(loadInstruction, vectorReg); // From architecture manual
@@ -327,7 +327,7 @@ void insnCodeGen::generateVectorLoad(codeGen &gen, unsigned vectorReg, register 
   insnCodeGen::generate(gen,loadInstruction);
 }
 
-void insnCodeGen::generateVectorStore(codeGen & gen, unsigned vectorReg, register RegAddress) {
+void insnCodeGen::generateVectorStore(codeGen & gen, unsigned vectorReg, Register RegAddress) {
   instruction storeInstruction;
   XLFORM_OP_SET(storeInstruction, STXVD2Xop);
   XLFORM_BT_SET(storeInstruction, vectorReg); // From architecture manual

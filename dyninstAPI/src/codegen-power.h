@@ -138,8 +138,8 @@ class insnCodeGen {
    static void removeStackFrame(codeGen &gen);
 
 
-   static void generateVectorLoad(codeGen &gen, unsigned vectorReg, register RegAddress);
-   static void generateVectorStore(codeGen & gen, unsigned vectorReg, register RegAddress);
+   static void generateVectorLoad(codeGen &gen, unsigned vectorReg, Register RegAddress);
+   static void generateVectorStore(codeGen & gen, unsigned vectorReg, Register RegAddress);
 
   static bool modifyJump(Address target,
                          NS_power::instruction &insn, 
