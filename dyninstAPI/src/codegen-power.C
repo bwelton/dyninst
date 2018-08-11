@@ -317,6 +317,7 @@ void insnCodeGen::generateMoveFromSPR(codeGen &gen,  Register toSPR,
 }
 
 void insnCodeGen::generateVectorLoad(codeGen &gen, unsigned vectorReg, Register RegAddress) {
+  //insnCodeGen::generateImm(gen, CALop,  rt, 0,  BOT_LO(value)); 
   instruction loadInstruction;
   XLFORM_OP_SET(loadInstruction, LXVD2Xop);
   XLFORM_BT_SET(loadInstruction, vectorReg); // From architecture manual
