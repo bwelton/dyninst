@@ -248,7 +248,7 @@ void GenerateSavesBaseTrampStyle(codeGen &gen) {
 
 
     saveFPRegisters(gen, gen.rs(), fpr_off);
-
+    fprintf(stderr, "I am called!\n");
     // Save LR            
     saveLR(gen, REG_SCRATCH /* register to use */, TRAMP_SPR_OFFSET(width) + STK_LR);
 
@@ -341,13 +341,13 @@ void insnCodeGen::generateVectorStore(codeGen & gen, unsigned vectorReg, Registe
 
 void insnCodeGen::saveVectors(codeGen & gen, int startStackOffset) {
   for (int i = 0; i < 32; i++) {
-    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset - (16*(i+1))));
+    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset + (16*(i+1))));
     insnCodeGen::generateVectorStore(gen, i, registerSpace::r10);
   }
 }
 void insnCodeGen::restoreVectors(codeGen & gen, int startStackOffset) {
   for (int i = 0; i < 32; i++) {
-    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset - (16*(i+1))));
+    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset + (16*(i+1))));
     insnCodeGen::generateVectorLoad(gen, i, registerSpace::r10);
   }
 }

@@ -769,9 +769,11 @@ void saveFPRegister(codeGen &gen,
                     Register reg,
                     int save_off)
 {
+    assert("WE SHOULD NOT BE HERE" == 0);
+
     insnCodeGen::generateImm(gen, STFDop, 
                              reg, REG_SP, save_off + reg*FPRSIZE);
-    fprintf(stderr, "Save offset: %d\n", save_off + reg*FPRSIZE);
+    //fprintf(stderr, "Save offset: %d\n", save_off + reg*FPRSIZE);
     //bperr( "Saving FP reg %d at 0x%x off the stack\n", 
     //  reg, offset + reg*FPRSIZE);
 }
@@ -781,6 +783,8 @@ void restoreFPRegister(codeGen &gen,
                        Register dest,
                        int save_off)
 {
+    assert("WE SHOULD NOT BE HERE" == 0);
+    
     insnCodeGen::generateImm(gen, LFDop, 
                              dest, REG_SP, save_off + source*FPRSIZE);
     //  bperr("Loading FP reg %d (into %d) at 0x%x off the stack\n", 
@@ -887,16 +891,18 @@ unsigned saveFPRegisters(codeGen &gen,
                          int save_off)
 {
   unsigned numRegs = 0;
-  for(int i = 0; i < theRegSpace->numFPRs(); i++) {
-      registerSlot *reg = theRegSpace->FPRs()[i];
-      if (reg->liveState == registerSlot::live) {
-          saveFPRegister(gen, reg->encoding(), save_off);
-          reg->liveState = registerSlot::spilled;
-          numRegs++;
-      }
-  }  
+  insnCodeGen::saveVectors(gen, save_off);
+
+  // for(int i = 0; i < theRegSpace->numFPRs(); i++) {
+  //     registerSlot *reg = theRegSpace->FPRs()[i];
+  //     if (reg->liveState == registerSlot::live) {
+  //         saveFPRegister(gen, reg->encoding(), save_off);
+  //         reg->liveState = registerSlot::spilled;
+  //         numRegs++;
+  //     }
+  // }  
   
-  return numRegs;
+  return 32;
 }
 
 /*
@@ -911,15 +917,16 @@ unsigned restoreFPRegisters(codeGen &gen,
 {
   
   unsigned numRegs = 0;
-  for(int i = 0; i < theRegSpace->numFPRs(); i++) {
-      registerSlot *reg = theRegSpace->FPRs()[i];
-      if (reg->liveState == registerSlot::spilled) {
-          restoreFPRegister(gen, reg->encoding(), save_off);
-          numRegs++;
-      }
-  }
+  insnCodeGen::restoreVectors(gen, save_off);
+  // for(int i = 0; i < theRegSpace->numFPRs(); i++) {
+  //     registerSlot *reg = theRegSpace->FPRs()[i];
+  //     if (reg->liveState == registerSlot::spilled) {
+  //         restoreFPRegister(gen, reg->encoding(), save_off);
+  //         numRegs++;
+  //     }
+  // }
   
-  return numRegs;
+  return 32;
 }
 
 /*
