@@ -771,6 +771,7 @@ void saveFPRegister(codeGen &gen,
 {
     insnCodeGen::generateImm(gen, STFDop, 
                              reg, REG_SP, save_off + reg*FPRSIZE);
+    fprintf(stderr, "Save offset: %d\n", save_off + reg*FPRSIZE);
     //bperr( "Saving FP reg %d at 0x%x off the stack\n", 
     //  reg, offset + reg*FPRSIZE);
 }
