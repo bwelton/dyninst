@@ -339,6 +339,18 @@ void insnCodeGen::generateVectorStore(codeGen & gen, unsigned vectorReg, Registe
   insnCodeGen::generate(gen,storeInstruction);  
 }
 
+void insnCodeGen::saveVectors(codeGen & gen, unsigned startStackOffset) {
+  for (int i = 0; i < 32; i++) {
+    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset - (16*(i+1))));
+    insnCodeGen::generateVectorStore(gen, i, registerSpace::r10);
+  }
+}
+void insnCodeGen::restoreVectors(codeGen & gen, unsigned startStackOffset) {
+  for (int i = 0; i < 32; i++) {
+    insnCodeGen::generateImm(gen, CALop, registerSpace::r10 , registerSpace::r1,  BOT_LO(startStackOffset - (16*(i+1))));
+    insnCodeGen::generateVectorLoad(gen, i, registerSpace::r10);
+  }
+}
 
 bool insnCodeGen::generateBranchTar(codeGen &gen, Register scratch, 
                                     Address dest, 
