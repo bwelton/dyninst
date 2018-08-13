@@ -169,7 +169,7 @@ class insnCodeGen {
                          Address dest, 
                          bool isCall);
   static void saveVectors(codeGen & gen, unsigned startStackOffset);
-  static void restoreVectors(codeGen & gen, unsigned startStackOffset)
+  static void restoreVectors(codeGen & gen, unsigned startStackOffset);
 
 };
 
