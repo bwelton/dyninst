@@ -270,6 +270,7 @@ bool CFWidget::generate(const codeGen &templ,
          break;
       }
       case Indirect: {
+        relocation_cerr << "In case indirect" << endl;
          Register reg = Null_Register; /* = originalRegister... */
          // Originally for use in helping with jump tables, I'm taking
          // this for the memory emulation effort. Huzzah!
@@ -300,6 +301,8 @@ bool CFWidget::generate(const codeGen &templ,
             }
          }
          else {
+
+            relocation_cerr << "Calling Generate Indirect" << endl;
             if (!generateIndirect(buffer, reg, trace, insn_))
                return false;
          }
