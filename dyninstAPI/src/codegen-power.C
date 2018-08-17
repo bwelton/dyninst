@@ -138,7 +138,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   //   fprintf(stderr, "%08x\n", insn.asInt());
   // }
   unsigned raw = insn.asInt();
-  if (raw == 0x90040048){
+  if (raw == 0x90040048 || raw == 0xa602087c){
     std::cerr << "Generating b e93e3fc, e93e88c" << std::endl;
   }
   // fprintf(stderr, "Instruction Written: %08x at position: %16x\n", insn.asInt(), gen.currAddr());
