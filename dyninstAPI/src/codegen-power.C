@@ -724,6 +724,16 @@ void insnCodeGen::generateBranchViaTrap(codeGen &gen, Address from, Address to, 
 
         fprintf(stderr, "I am in where we should be generating instructions\n" );
         
+        // Here is a potential strategy
+        // 1. Create a stack frame
+        // 2. Push a (we like r10) register to the frame.
+        // 3. Calculate the effective address into the register
+        // 4. Push to TAR
+        // 5. Restore previous register
+        // 6. Delete frame
+        // 7. branch to tar. 
+
+
         //instruction insn(NOOPraw);
         //insnCodeGen::generate(gen,insn);
         //insnCodeGen::generate(gen,insn);

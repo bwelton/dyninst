@@ -289,6 +289,8 @@ bool CFWidget::generate(const codeGen &templ,
             // So if there's the possibility for a return put in
             // a fallthrough branch
             if (destMap_.find(Fallthrough) != destMap_.end()) {
+               relocation_cerr << "Generating branch because fallthrough edge was moved" << endl;
+               relocation_cerr << "Fallthrough branch location - " << std::hex << destMap_[Fallthrough] << endl;
                if (!generateBranch(buffer,
                                    destMap_[Fallthrough],
                                    Instruction::Ptr(),
