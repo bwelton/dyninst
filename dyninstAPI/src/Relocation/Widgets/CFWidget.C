@@ -305,6 +305,16 @@ bool CFWidget::generate(const codeGen &templ,
             relocation_cerr << "Calling Generate Indirect" << endl;
             if (!generateIndirect(buffer, reg, trace, insn_))
                return false;
+            if (destMap_.find(Fallthrough) != destMap_.end()) {
+               relocation_cerr << "Generating branch because fallthrough edge was moved" << endl;
+               relocation_cerr << "Fallthrough branch location - " << std::hex << destMap_[Fallthrough] << endl;
+               if (!generateBranch(buffer,
+                                   destMap_[Fallthrough],
+                                   Instruction::Ptr(),
+                                   trace,
+                                   true)) 
+                  return false;
+            }
          }
          break;
       }
