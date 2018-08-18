@@ -166,6 +166,7 @@ bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
    else {
       switch(type) {
          case CFPatch::Jump:
+            relocation_cerr << "\t\t\t Currently at " << hex << gen.currAddr() << " and targeting predicted " << buf->predictedAddr(targetLabel) << dec << endl;  
             insnCodeGen::generateBranch(gen, gen.currAddr(), buf->predictedAddr(targetLabel));
             break;
          case CFPatch::Call:
