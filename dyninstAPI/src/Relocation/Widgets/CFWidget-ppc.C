@@ -88,7 +88,9 @@ bool CFWidget::generateIndirectCall(CodeBuffer &buffer,
 }
 
 bool CFPatch::apply(codeGen &gen, CodeBuffer *buf) {
-
+  if (func != NULL && func->name().find("_ZN6SAMRAI4mesh24StandardTagAndInitialize19initializeLevelDataERKSt") != std::string::npos) {
+    relocation_cerr << "Stop here!!!"<< std::endl;
+  }
   if (needsTOCUpdate()) {
      relocation_cerr << "\t\t\t isSpecialCase..." << endl;
      gen.setFunction(const_cast<func_instance *>(func));
