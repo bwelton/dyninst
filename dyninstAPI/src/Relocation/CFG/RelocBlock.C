@@ -565,7 +565,9 @@ bool RelocBlock::finalizeCF() {
    if (origAddr() < 0x1071827c && origAddr() > 0x10718199) {
       debug = true;
       cerr << "Debugging finalizeCF for last snippet block" << endl;
+      std::cerr << format() << std::endl;
    }
+
 
    // We've had people munging our out-edges; now
    // push them to the CFWidget so that it can do its work. 
@@ -588,9 +590,9 @@ bool RelocBlock::finalizeCF() {
          assert((*iter)->type == ParseAPI::INDIRECT);
          index = (*iter)->trg->origAddr();
       }
-      //if (debug) {
+      if (debug) {
          cerr << "Adding destination /w/ index " << index << " and target " << hex << (*iter)->trg->origAddr() << dec << endl;
-      //p}
+      }
       cfWidget_->addDestination(index, (*iter)->trg);
       (*iter)->trg->setNecessary(isNecessary((*iter)->trg, (*iter)->type));
    }
