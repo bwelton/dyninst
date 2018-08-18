@@ -562,7 +562,7 @@ bool RelocBlock::finalizeCF() {
       assert(0);
    }
    bool debug = false;
-   if (origAddr() == 0x68e750) {
+   if (origAddr() == 0x10718224) {
       debug = true;
       cerr << "Debugging finalizeCF for last snippet block" << endl;
    }
