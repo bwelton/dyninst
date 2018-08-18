@@ -140,7 +140,7 @@ void insnCodeGen::generate(codeGen &gen, instruction&insn) {
   unsigned raw = insn.asInt();
   if (gen.currAddr() == 0xe93e3fc){
     std::cerr << "Generating b e93e3fc, e93e88c" << std::endl;
-    assert(1==0);
+    //assert(1==0);
   }
   // fprintf(stderr, "Instruction Written: %08x at position: %16x\n", insn.asInt(), gen.currAddr());
   //fprintf(stderr, "Raw Written value %u\n", raw);
