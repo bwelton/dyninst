@@ -563,6 +563,7 @@ bool RelocBlock::finalizeCF() {
    }
    bool debug = false;
    if (origAddr() < 0x1071827c && origAddr() > 0x10718199) {
+      cerr << "START" << endl;
       debug = true;
       cerr << "Debugging finalizeCF for last snippet block" << endl;
       std::cerr << format() << std::endl;
@@ -571,6 +572,8 @@ bool RelocBlock::finalizeCF() {
 
    // We've had people munging our out-edges; now
    // push them to the CFWidget so that it can do its work. 
+   if (debug)
+      cerr << "Begin reloc edge printing" << endl;
    for (RelocEdges::iterator iter = outEdges_.begin(); iter != outEdges_.end(); ++iter) {
       if ((*iter)->type == ParseAPI::CATCH ||
           (*iter)->type == ParseAPI::RET ||
@@ -596,7 +599,8 @@ bool RelocBlock::finalizeCF() {
       cfWidget_->addDestination(index, (*iter)->trg);
       (*iter)->trg->setNecessary(isNecessary((*iter)->trg, (*iter)->type));
    }
-   
+   if (debug)
+      cerr << "End reloc edge printing" << endl;
    return true;
 }
 
