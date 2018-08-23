@@ -81,7 +81,7 @@ RelocBlock *RelocBlock::createReloc(block_instance *block, func_instance *func) 
     newRelocBlock = new RelocBlock(block, func);
   }
 
-  std::cerr << "[RelocBlock::createReloc] Function " << func->name() << " has been set to " << func->_powerPreamble << std::endl;
+//  std::cerr << "[RelocBlock::createReloc] Function " << func->name() << " has been set to " << func->_powerPreamble << std::endl;
   // Get the list of instructions in the block
   block_instance::Insns insns;
   block->getInsns(insns);

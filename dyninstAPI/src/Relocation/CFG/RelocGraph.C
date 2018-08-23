@@ -59,11 +59,11 @@ RelocGraph::~RelocGraph() {
 }
 
 void RelocGraph::addRelocBlock(RelocBlock *t) {
-   std::cerr << "[RelocGraph::addRelocBlock] Adding reloc block  @orig=" << std::hex << t->block()->GetBlockStartingAddress() 
-             << " with name " << t->func()->name() << " and power_preamble " << t->block()->_powerPreamble << std::endl; 
+   // std::cerr << "[RelocGraph::addRelocBlock] Adding reloc block  @orig=" << std::hex << t->block()->GetBlockStartingAddress() 
+   //           << " with name " << t->func()->name() << " and power_preamble " << t->block()->_powerPreamble << std::endl; 
    if (t->type() == RelocBlock::Relocated) {
-         std::cerr << "[RelocGraph::addRelocBlock] Added to springboard pair @orig=" << std::hex << t->block()->GetBlockStartingAddress() 
-             << " with name " << t->func()->name() << " and power_preamble " << t->block()->_powerPreamble << std::endl; 
+         // std::cerr << "[RelocGraph::addRelocBlock] Added to springboard pair @orig=" << std::hex << t->block()->GetBlockStartingAddress() 
+         //     << " with name " << t->func()->name() << " and power_preamble " << t->block()->_powerPreamble << std::endl; 
       springboards[std::make_pair(t->block(), t->func())] = t;
       reloc[t->block()][t->func()] = t;
    }

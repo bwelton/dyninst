@@ -73,7 +73,7 @@ bool SpringboardBuilder::generateInt(std::list<codeGen> &springboards,
    // We want to do a reverse iteration so that we don't have a situation
    // where an earlier springboard overlaps a later one.
    //
-   cerr << "[SpringboardBuilder] Building Springboards with priority " << p << endl;
+//   cerr << "[SpringboardBuilder] Building Springboards with priority " << p << endl;
    for (SpringboardMap::reverse_iterator iter = input.rbegin(p); 
         iter != input.rend(p); ++iter) {
       const SpringboardReq &req = iter->second;
