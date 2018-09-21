@@ -1776,69 +1776,10 @@ bool AddressSpace::relocate() {
       }
    } while (repeat);    
 
-
-
-  // 
-  // for (std::map<mapped_object *, FuncSet>::iterator iter = modifiedFunctions_.begin();
-  //      iter != modifiedFunctions_.end(); ++iter) {
-     // FuncSet &modFuncs = iter->second;
-
-     // bool repeat = false;
-
-//      do { // add overlapping functions in a fixpoint calculation
-//         repeat = false;
-//         unsigned int num = modFuncs.size();
-//         FuncSet overlappingFuncs;
-//         for (FuncSet::iterator iter2 = modFuncs.begin(); iter2 != modFuncs.end(); ++iter2) {
-// //           block_instance *entry = (*iter2)->entryBlock();
-// //           entry->getFuncs(std::inserter(overlappingFuncs,overlappingFuncs.begin()));
-//            // Check whether any blocks in the function are are members of any other functions
-//             func_instance* curFunc = *iter2;
-//             for (auto iter3 = curFunc->blocks().begin(); iter3 != curFunc->blocks().end(); ++iter3) {
-//                 block_instance* curBlock = SCAST_BI(*iter3);
-//                 curBlock->getFuncs(std::inserter(overlappingFuncs,overlappingFuncs.begin()));
-//            }
-//         }
-//         modFuncs.insert(overlappingFuncs.begin(), overlappingFuncs.end());
-//         if (num < modFuncs.size()) {
-//            repeat = true;
-//         }
-//      } while (repeat);
-     
-     // Fix for power 8 to remove preamble functions.
-     // std::map<uint64_t, func_instance *> _findPower8Overlaps;
-     // for (auto i : modFuncs) {
-     //    if (_findPower8Overlaps.find(i->entryBlock()->GetBlockStartingAddress()) != _findPower8Overlaps.end())
-     //      std::cerr << "What? We have two functions with the same entry point...." << i->name() << "," << i->name() << " at address - " << std::hex << i->entryBlock()->GetBlockStartingAddress() << std::dec << std::endl;
-     //    _findPower8Overlaps[i->entryBlock()->GetBlockStartingAddress()] = i;
-     // }
-//      for (auto i : _findPower8Overlaps) {
-//         //std::cerr << "[AddressSpace::Relocate] Starting Address " << std::hex << i.first << std::dec << " Name = " << i.second->name() << std::endl;
-//         if (_findPower8Overlaps.find(i.first + 0x8) != _findPower8Overlaps.end())
-//           modFuncs.erase(i.second);
-//         // Some crazy heuristic games.... 
-//         else {
-//           // In this case, we are looking for the first three instructions of the basic block being LS, ADDI, and MFLR. 
-//           // If these three instructions appear in order, then we have a preamble we should NOT be relocated and for now
-//           // will also not be instrimented...
-// //          std::vector<std::string> retString;
-//           // if (i.second->entryBlock() != NULL) {
-//           //   i.second->entryBlock()->GetBlockInstructions(retString);
-//           //   if (retString.size() < 3)
-//           //     continue;
-//           //   // if (retString[0].find("lis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos && retString[2].find("mfspr R0, LR") != std::string::npos){
-//           //   //   std::cerr << "[AddressSpace::Relocate] Excluding the function - " << i.second->name() << " because it matches a preamble for function entry on POWER\n" << std::endl;
-//           //   //   for (auto n : retString)
-//           //   //     std::cerr << "[AddressSpace::Relocate]\t Instruction: " << n << std::endl;
-//           //   //   modFuncs.erase(i.second);
-//           //   // }
-//           // }
-//         }
-//      }
     for (auto myFuncAddr : modFuncs){
-        std::cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << std::hex << myFuncAddr->entryBlock()->GetBlockStartingAddress() << " With Preamble " << myFuncAddr->_powerPreamble << std::endl;
+        relocation_cerr << "AddressSpace::Relocate - Relocating: " << myFuncAddr->name() << " at address " << std::hex << myFuncAddr->entryBlock()->GetBlockStartingAddress() << " With Preamble " << myFuncAddr->_powerPreamble << std::endl;
     }
-    std::cerr << "End of relocation Printing\n";
+    relocation_cerr << "End of relocation Printing\n";
 
      addModifiedRegion(iter->first);
      
